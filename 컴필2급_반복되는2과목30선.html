@@ -1,0 +1,2726 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+						<style>
+		body {
+			background-color: white; /* Ensure the iframe has a white background */
+		}
+								
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
+    background: #f2f4f7;
+    color: #222;
+    padding-bottom: 30px;
+  }
+  #app {
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    background: linear-gradient(135deg,#4f46e5,#7c3aed);
+    color: #fff;
+    padding: 16px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  header h1 { font-size: 16px; margin-bottom: 4px; }
+  .progress-wrap {
+    background: rgba(255,255,255,0.25);
+    border-radius: 10px;
+    height: 8px;
+    margin-top: 8px;
+    overflow: hidden;
+  }
+  .progress-bar {
+    background: #fff;
+    height: 100%;
+    width: 0%;
+    transition: width .3s;
+  }
+  .progress-text { font-size: 12px; margin-top: 6px; opacity:.9; }
+
+  main { flex:1; padding: 16px; }
+
+  .step-badge {
+    display:inline-block;
+    background:#eef2ff;
+    color:#4f46e5;
+    font-size:12px;
+    font-weight:600;
+    padding:4px 10px;
+    border-radius:20px;
+    margin-bottom:12px;
+  }
+
+  .start-screen { text-align:center; padding: 30px 16px; }
+  .start-screen h2 { font-size:20px; margin-bottom:10px; }
+  .start-screen p { color:#666; margin-bottom:16px; line-height:1.6; }
+  .big-btn {
+    display:block;
+    width:100%;
+    padding:16px;
+    background:#4f46e5;
+    color:#fff;
+    border:none;
+    border-radius:12px;
+    font-size:16px;
+    font-weight:600;
+    margin-top:12px;
+    cursor:pointer;
+  }
+  .big-btn.secondary { background:#f3f4f6; color:#333; }
+  .big-btn:active { transform: scale(0.98); }
+  .big-btn:disabled { opacity:.6; cursor:default; }
+
+  .form-row { display:flex; gap:10px; margin-bottom:14px; }
+  .form-group { flex:1; text-align:left; }
+  .form-group.full { margin-bottom:14px; }
+  .form-group label { display:block; font-size:12px; color:#666; margin-bottom:4px; font-weight:600; }
+  .form-group input, .form-group select {
+    width:100%;
+    padding:12px;
+    border:2px solid #e5e7eb;
+    border-radius:10px;
+    font-size:15px;
+    background:#fff;
+    color:#222;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .form-group select {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+    background-repeat:no-repeat;
+    background-position: right 12px center;
+    padding-right: 30px;
+  }
+  .form-group input:focus, .form-group select:focus { border-color:#4f46e5; outline:none; }
+
+  .section-label {
+    text-align:left;
+    font-size:13px;
+    font-weight:700;
+    color:#374151;
+    margin: 18px 0 8px;
+  }
+  .chip-group { display:flex; flex-wrap:wrap; gap:8px; }
+  .chip-btn {
+    padding:10px 16px;
+    border-radius:20px;
+    border:2px solid #e5e7eb;
+    background:#fff;
+    font-size:13px;
+    font-weight:600;
+    color:#555;
+    cursor:pointer;
+  }
+  .chip-btn.active {
+    background:#4f46e5;
+    border-color:#4f46e5;
+    color:#fff;
+  }
+  .total-badge {
+    display:inline-block;
+    background:#fef3c7;
+    color:#92400e;
+    padding:8px 16px;
+    border-radius:20px;
+    font-weight:700;
+    font-size:14px;
+    margin-bottom:8px;
+  }
+
+  /* ===== 플래시카드 공통 (크기 통일) ===== */
+  .flip-card {
+    perspective: 1000px;
+    height: 380px;
+    margin-bottom: 16px;
+  }
+  .flip-inner {
+    position: relative;
+    width: 100%; height: 100%;
+    transition: transform 0.5s;
+    transform-style: preserve-3d;
+  }
+  .flip-card.flipped .flip-inner { transform: rotateY(180deg); }
+  .flip-front, .flip-back {
+    position: absolute;
+    width: 100%; height: 100%;
+    backface-visibility: hidden;
+    border-radius: 16px;
+    padding: 20px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    font-size: 16px;
+    line-height:1.5;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow-y: auto;
+  }
+  .flip-front {
+    background: #fff;
+    border: 2px solid #e0e7ff;
+    cursor: pointer;
+  }
+  .flip-back {
+    background: #4f46e5;
+    color:#fff;
+    transform: rotateY(180deg);
+  }
+  .flip-hint {
+    text-align:center;
+    color:#999;
+    font-size:12px;
+    margin-bottom: 16px;
+  }
+  .card-nav { display:flex; gap:10px; margin-top:10px;}
+  .card-nav button { flex:1; }
+
+  .flip-card.ox-card .flip-front {
+    flex-direction: column;
+    gap: 18px;
+    cursor: default;
+  }
+  .ox-question-text { font-size: 16px; line-height: 1.6; font-weight: 600; }
+  .ox-btns-inner { display: flex; gap: 14px; width: 100%; }
+  .ox-btns-inner .ox-btn {
+    flex: 1;
+    padding: 18px 0;
+    font-size: 26px;
+    font-weight: 800;
+    border-radius: 14px;
+    border: 2px solid #ddd;
+    background: #f9fafb;
+    cursor: pointer;
+  }
+  .ox-btns-inner .ox-btn.o { color:#2563eb; border-color:#bfdbfe; }
+  .ox-btns-inner .ox-btn.x { color:#dc2626; border-color:#fecaca; }
+  .flip-card.ox-card .flip-back,
+  .flip-card.mc-card .flip-back {
+    flex-direction: column;
+    gap: 10px;
+    padding: 22px;
+  }
+  .back-correct { background: #16a34a !important; }
+  .back-wrong { background: #dc2626 !important; }
+  .ox-result-icon { font-size: 36px; }
+  .ox-result-title { font-size: 17px; font-weight: 800; }
+  .ox-result-sub { font-size: 12px; opacity:.9; }
+  .ox-explain-text {
+    font-size: 12.5px;
+    line-height: 1.6;
+    background: rgba(255,255,255,0.15);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-top: 4px;
+  }
+
+  .flip-card.mc-card .flip-front {
+    align-items:stretch;
+    justify-content:flex-start;
+    text-align:left;
+    cursor:default;
+  }
+  .mc-front-inner { width:100%; }
+  .quiz-question {
+    background:#fafafa;
+    border-radius:12px;
+    padding:12px;
+    margin-bottom:10px;
+    font-size:13.5px;
+    line-height:1.55;
+    border:1px solid #eee;
+    white-space: pre-line;
+  }
+  .choice-btn {
+    display:block;
+    width:100%;
+    text-align:left;
+    padding:10px;
+    margin-bottom:7px;
+    border-radius:10px;
+    border:2px solid #ddd;
+    background:#fff;
+    font-size:12.5px;
+    line-height:1.5;
+    cursor:pointer;
+  }
+  .choice-btn.correct { background:#dcfce7; border-color:#22c55e; }
+  .choice-btn.wrong { background:#fee2e2; border-color:#ef4444; }
+  .choice-btn:disabled { cursor:default; }
+
+  .status-box {
+    font-size:13px;
+    padding:10px;
+    border-radius:10px;
+    margin-top:10px;
+    text-align:left;
+  }
+  .status-ok { background:#dcfce7; color:#166534; }
+  .status-fail { background:#fee2e2; color:#991b1b; }
+  .status-wait { background:#fef9c3; color:#854d0e; }
+
+  .hidden { display:none !important; }
+
+
+							</style>
+                        </head>
+                        <body>
+                            <!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>컴활 2급 - 2과목 학습앱</title>
+<style>
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
+    background: #f2f4f7;
+    color: #222;
+    padding-bottom: 30px;
+  }
+  #app {
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    background: linear-gradient(135deg,#4f46e5,#7c3aed);
+    color: #fff;
+    padding: 16px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  header h1 { font-size: 16px; margin-bottom: 4px; }
+  .progress-wrap {
+    background: rgba(255,255,255,0.25);
+    border-radius: 10px;
+    height: 8px;
+    margin-top: 8px;
+    overflow: hidden;
+  }
+  .progress-bar {
+    background: #fff;
+    height: 100%;
+    width: 0%;
+    transition: width .3s;
+  }
+  .progress-text { font-size: 12px; margin-top: 6px; opacity:.9; }
+
+  main { flex:1; padding: 16px; }
+
+  .step-badge {
+    display:inline-block;
+    background:#eef2ff;
+    color:#4f46e5;
+    font-size:12px;
+    font-weight:600;
+    padding:4px 10px;
+    border-radius:20px;
+    margin-bottom:12px;
+  }
+
+  .start-screen { text-align:center; padding: 30px 16px; }
+  .start-screen h2 { font-size:20px; margin-bottom:10px; }
+  .start-screen p { color:#666; margin-bottom:16px; line-height:1.6; }
+  .big-btn {
+    display:block;
+    width:100%;
+    padding:16px;
+    background:#4f46e5;
+    color:#fff;
+    border:none;
+    border-radius:12px;
+    font-size:16px;
+    font-weight:600;
+    margin-top:12px;
+    cursor:pointer;
+  }
+  .big-btn.secondary { background:#f3f4f6; color:#333; }
+  .big-btn:active { transform: scale(0.98); }
+  .big-btn:disabled { opacity:.6; cursor:default; }
+
+  .form-row { display:flex; gap:10px; margin-bottom:14px; }
+  .form-group { flex:1; text-align:left; }
+  .form-group.full { margin-bottom:14px; }
+  .form-group label { display:block; font-size:12px; color:#666; margin-bottom:4px; font-weight:600; }
+  .form-group input, .form-group select {
+    width:100%;
+    padding:12px;
+    border:2px solid #e5e7eb;
+    border-radius:10px;
+    font-size:15px;
+    background:#fff;
+    color:#222;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .form-group select {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+    background-repeat:no-repeat;
+    background-position: right 12px center;
+    padding-right: 30px;
+  }
+  .form-group input:focus, .form-group select:focus { border-color:#4f46e5; outline:none; }
+
+  .section-label {
+    text-align:left;
+    font-size:13px;
+    font-weight:700;
+    color:#374151;
+    margin: 18px 0 8px;
+  }
+  .chip-group { display:flex; flex-wrap:wrap; gap:8px; }
+  .chip-btn {
+    padding:10px 16px;
+    border-radius:20px;
+    border:2px solid #e5e7eb;
+    background:#fff;
+    font-size:13px;
+    font-weight:600;
+    color:#555;
+    cursor:pointer;
+  }
+  .chip-btn.active {
+    background:#4f46e5;
+    border-color:#4f46e5;
+    color:#fff;
+  }
+  .total-badge {
+    display:inline-block;
+    background:#fef3c7;
+    color:#92400e;
+    padding:8px 16px;
+    border-radius:20px;
+    font-weight:700;
+    font-size:14px;
+    margin-bottom:8px;
+  }
+
+  /* ===== 플래시카드 공통 (크기 통일) ===== */
+  .flip-card {
+    perspective: 1000px;
+    height: 380px;
+    margin-bottom: 16px;
+  }
+  .flip-inner {
+    position: relative;
+    width: 100%; height: 100%;
+    transition: transform 0.5s;
+    transform-style: preserve-3d;
+  }
+  .flip-card.flipped .flip-inner { transform: rotateY(180deg); }
+  .flip-front, .flip-back {
+    position: absolute;
+    width: 100%; height: 100%;
+    backface-visibility: hidden;
+    border-radius: 16px;
+    padding: 20px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    font-size: 16px;
+    line-height:1.5;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow-y: auto;
+  }
+  .flip-front {
+    background: #fff;
+    border: 2px solid #e0e7ff;
+    cursor: pointer;
+  }
+  .flip-back {
+    background: #4f46e5;
+    color:#fff;
+    transform: rotateY(180deg);
+  }
+  .flip-hint {
+    text-align:center;
+    color:#999;
+    font-size:12px;
+    margin-bottom: 16px;
+  }
+  .card-nav { display:flex; gap:10px; margin-top:10px;}
+  .card-nav button { flex:1; }
+
+  .flip-card.ox-card .flip-front {
+    flex-direction: column;
+    gap: 18px;
+    cursor: default;
+  }
+  .ox-question-text { font-size: 16px; line-height: 1.6; font-weight: 600; }
+  .ox-btns-inner { display: flex; gap: 14px; width: 100%; }
+  .ox-btns-inner .ox-btn {
+    flex: 1;
+    padding: 18px 0;
+    font-size: 26px;
+    font-weight: 800;
+    border-radius: 14px;
+    border: 2px solid #ddd;
+    background: #f9fafb;
+    cursor: pointer;
+  }
+  .ox-btns-inner .ox-btn.o { color:#2563eb; border-color:#bfdbfe; }
+  .ox-btns-inner .ox-btn.x { color:#dc2626; border-color:#fecaca; }
+  .flip-card.ox-card .flip-back,
+  .flip-card.mc-card .flip-back {
+    flex-direction: column;
+    gap: 10px;
+    padding: 22px;
+  }
+  .back-correct { background: #16a34a !important; }
+  .back-wrong { background: #dc2626 !important; }
+  .ox-result-icon { font-size: 36px; }
+  .ox-result-title { font-size: 17px; font-weight: 800; }
+  .ox-result-sub { font-size: 12px; opacity:.9; }
+  .ox-explain-text {
+    font-size: 12.5px;
+    line-height: 1.6;
+    background: rgba(255,255,255,0.15);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-top: 4px;
+  }
+
+  .flip-card.mc-card .flip-front {
+    align-items:stretch;
+    justify-content:flex-start;
+    text-align:left;
+    cursor:default;
+  }
+  .mc-front-inner { width:100%; }
+  .quiz-question {
+    background:#fafafa;
+    border-radius:12px;
+    padding:12px;
+    margin-bottom:10px;
+    font-size:13.5px;
+    line-height:1.55;
+    border:1px solid #eee;
+    white-space: pre-line;
+  }
+  .choice-btn {
+    display:block;
+    width:100%;
+    text-align:left;
+    padding:10px;
+    margin-bottom:7px;
+    border-radius:10px;
+    border:2px solid #ddd;
+    background:#fff;
+    font-size:12.5px;
+    line-height:1.5;
+    cursor:pointer;
+  }
+  .choice-btn.correct { background:#dcfce7; border-color:#22c55e; }
+  .choice-btn.wrong { background:#fee2e2; border-color:#ef4444; }
+  .choice-btn:disabled { cursor:default; }
+
+  .status-box {
+    font-size:13px;
+    padding:10px;
+    border-radius:10px;
+    margin-top:10px;
+    text-align:left;
+  }
+  .status-ok { background:#dcfce7; color:#166534; }
+  .status-fail { background:#fee2e2; color:#991b1b; }
+  .status-wait { background:#fef9c3; color:#854d0e; }
+
+  .hidden { display:none !important; }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1 id="headerTitle">컴활 2급 - 2과목 스프레드시트</h1>
+    <div id="progressWrap" class="progress-wrap hidden">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <div id="progressText" class="progress-text hidden"></div>
+  </header>
+  <main id="main"></main>
+</div>
+
+<!-- ===== 결과 전송용 숨김 폼 + iframe (CORS 우회, fetch 미사용) ===== -->
+<iframe name="hiddenSubmitFrame" id="hiddenSubmitFrame" style="display:none;"></iframe>
+<form id="hiddenSubmitForm" target="hiddenSubmitFrame" method="POST" style="display:none;">
+  <input type="hidden" name="grade" id="fGrade">
+  <input type="hidden" name="classNum" id="fClassNum">
+  <input type="hidden" name="number" id="fNumber">
+  <input type="hidden" name="name" id="fName">
+  <input type="hidden" name="score" id="fScore">
+  <input type="hidden" name="total" id="fTotal">
+</form>
+
+<script>
+/* =========================================================
+   ⚠️ 구글 스프레드시트 연동 URL
+   Apps Script 배포 후 나온 웹앱 URL을 아래에 붙여넣으세요.
+   반드시 '/exec' 로 끝나는 URL이어야 합니다.
+========================================================= */
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzbVEV9lqNgx9htzBEnOOB6gcVs-orvV70B0NZT6IFaMTkyrYEfTSbHEJxBBsPHxsZVYA/exec";
+
+// 폼의 action을 URL로 설정
+document.getElementById('hiddenSubmitForm').action = GOOGLE_SCRIPT_URL;
+
+/* ===================== 문제 데이터 ===================== */
+const QUESTIONS = [
+{
+  title:"01. 틀 고정 기능",
+  cards:[
+    {q:"틀 고정 선을 취소하는 방법은?", a:"[보기]-[창]-[틀 고정]-[틀 고정 취소] 선택 (더블클릭 아님)"},
+    {q:"틀 고정 형태는 인쇄 시 어떻게 적용되는가?", a:"화면에 표시되는 틀 고정 형태는 인쇄 시 적용되지 않음"}
+  ],
+  ox:[{q:"틀 고정 선을 더블클릭하면 틀 고정이 취소된다.", a:false, explain:"틀 고정은 더블클릭이 아닌 [보기]-[창]-[틀 고정]-[틀 고정 취소] 메뉴를 통해서만 취소할 수 있습니다."}],
+  mc:{
+    q:"다음 중 [보기] 탭-[창] 그룹-[틀 고정] 기능에 대한 설명으로 옳지 않은 것은?",
+    options:[
+      "워크시트를 스크롤할 때 특정 행이나 열이 한 자리에 계속 표시되도록 선택할 수 있는 기능이다.",
+      "첫 행과 첫 열을 고정하여 표시되도록 한 번에 설정할 수 있다.",
+      "틀 고정 선의 아무 곳이나 더블클릭하여 틀 고정을 취소할 수 있다.",
+      "화면에 표시되는 틀 고정 형태는 인쇄 시 적용되지 않는다."
+    ],
+    answer:2,
+    explain:"틀 고정은 더블클릭이 아닌 [보기]-[창]-[틀 고정]-[틀 고정 취소] 메뉴를 통해서만 취소 가능합니다."
+  }
+},
+{
+  title:"02. 창 나누기",
+  cards:[
+    {q:"창 나누기는 최대 몇 개로 분할 가능한가?", a:"최대 4개 부분"},
+    {q:"창 나누기 상태에서 추가로 나누기가 가능한가?", a:"불가능함 (현재 상태 유지하며 추가 불가)"}
+  ],
+  ox:[{q:"창 나누기 상태를 유지하면서 추가 창 나누기가 가능하다.", a:false, explain:"현재의 창 나누기 상태를 유지하면서 추가로 창 나누기를 지정하는 것은 불가능합니다."}],
+  mc:{
+    q:"다음 중 창 나누기에 대한 설명으로 옳지 않은 것은?",
+    options:[
+      "창 나누기를 실행하면 하나의 작업 창은 최대 4개 부분으로 나눌 수 있다.",
+      "첫 행과 첫 열을 제외한 나머지 셀에서 창 나누기를 수행하면 현재 셀의 위쪽과 왼쪽에 창 분할선이 생긴다.",
+      "현재의 창 나누기 상태를 유지하면서 추가로 창 나누기를 지정할 수 있다.",
+      "화면에 표시되는 창 나누기 형태는 인쇄 시 적용되지 않는다."
+    ],
+    answer:2,
+    explain:"창 나누기 상태 유지 중 추가 나누기는 불가능합니다."
+  }
+},
+{
+  title:"03. 시트 보호와 통합 문서 보호",
+  cards:[
+    {q:"'잠긴 셀 선택'을 허용하지 않으려면?", a:"[검토]-[보호]-[시트 보호]에서 해제 + [셀 서식]-[보호] 탭 '잠금' 확인"},
+    {q:"통합 문서 보호 '구조' 선택 시 제한되는 것은?", a:"워크시트의 변경 및 추가, 삭제 등의 변경"}
+  ],
+  ox:[{q:"통합 문서 보호는 셀 내용 변경 제한 기능이다.", a:false, explain:"통합 문서 보호는 셀 내용이 아니라 시트의 삽입·삭제·이동·숨기기·이름 바꾸기 등을 제한하는 기능입니다."}],
+  mc:{
+    q:"다음 중 시트 보호와 통합 문서 보호에 대한 설명으로 옳지 않은 것은?",
+    options:[
+      "시트 보호에서 '잠긴 셀 선택'을 허용하지 않으려면 시트 보호 설정 전 [셀 서식] 대화상자의 [보호] 탭에 '숨김' 항목이 선택되어 있어야 한다.",
+      "시트 보호 시 시트 보호 해제 암호를 지정할 수 있으며, 암호를 설정하지 않으면 모든 사용자가 보호를 해제하고 변경할 수 있다.",
+      "통합 문서 보호는 시트의 삽입, 삭제, 이동, 숨기기, 이름 바꾸기 등의 작업을 할 수 없도록 보호하는 것이다.",
+      "통합 문서 보호에서 보호할 대상으로 구조를 선택하면 워크시트의 변경 및 추가, 삭제 등의 변경이 제한된다."
+    ],
+    answer:0,
+    explain:"'숨김'이 아닌 '잠금' 항목 체크 확인이 필요합니다."
+  }
+},
+{
+  title:"04. 데이터 입력",
+  cards:[
+    {q:"셀 안에서 줄 바꿈하는 단축키는?", a:"Alt+Enter"},
+    {q:"여러 셀에 동일 데이터를 한번에 입력하는 단축키는?", a:"여러 셀 선택 후 데이터 입력 → Ctrl+Enter"}
+  ],
+  ox:[{q:"여러 셀 선택 후 Shift+Enter를 누르면 일괄 입력된다.", a:false, explain:"여러 셀에 동일한 데이터를 한번에 입력하려면 Shift+Enter가 아니라 Ctrl+Enter를 눌러야 합니다."}],
+  mc:{
+    q:"다음 중 데이터 입력에 대한 설명으로 옳지 않은 것은?",
+    options:[
+      "셀 안에서 줄 바꿈을 하려면 Alt+Enter를 누른다.",
+      "한 행을 블록 설정한 상태에서 Enter를 누르면 블록 내의 셀이 순차적으로 선택되어 행 단위 입력이 쉽다.",
+      "여러 셀에 데이터를 한 번에 입력하려면 여러 셀이 선택된 상태에서 데이터 입력 후 Shift+Enter를 누른다.",
+      "열 너비가 좁아 날짜를 표시하지 못하면 '#'이 반복 표시된다."
+    ],
+    answer:2,
+    explain:"Shift+Enter가 아닌 Ctrl+Enter를 눌러야 합니다."
+  }
+},
+{
+  title:"05. 자동 채우기 핸들",
+  cards:[
+    {q:"문자+숫자 혼합 데이터의 자동 채우기 규칙은?", a:"문자는 복사, 숫자는 1씩 증가"},
+    {q:"날짜 데이터 자동 채우기 규칙은?", a:"1일씩 증가"}
+  ],
+  ox:[{q:"문자와 숫자 혼합 데이터를 자동 채우기하면 문자도 증가한다.", a:false, explain:"문자+숫자 혼합 데이터의 자동 채우기는 문자는 그대로 복사되고 숫자만 1씩 증가합니다."}],
+  mc:{
+    q:"[A1:B1]에 '가-011','01월16일' 입력 후 [B3]까지 채우기 핸들 드래그 시 [A3],[B3] 값은?",
+    options:["다-011, 01월17일","가-013, 01월17일","가-013, 03월15일","다-011, 03월15일"],
+    answer:1,
+    explain:"문자는 복사(가), 숫자는 1씩 증가(011→012→013), 날짜는 1일씩 증가(16→17)."
+  }
+},
+{
+  title:"06. 메모",
+  cards:[
+    {q:"메모에 텍스트 서식 지정이 가능한가?", a:"가능함 (글꼴, 크기 등)"},
+    {q:"메모는 인쇄 시 어떻게 처리할 수 있는가?", a:"시트에 표시된 대로 인쇄하거나 시트 끝에 인쇄 가능"}
+  ],
+  ox:[{q:"메모에는 텍스트 서식을 지정할 수 없다.", a:false, explain:"메모에서도 글꼴, 크기 등 텍스트 서식을 지정할 수 있습니다."}],
+  mc:{
+    q:"다음 중 메모에 대한 설명으로 옳지 않은 것은?",
+    options:[
+      "셀에 입력된 내용에 대한 보충 설명을 기록할 때 사용하는 기능이다.",
+      "시트에 표시된 대로 인쇄하거나 시트의 끝에 인쇄할 수 있다.",
+      "문자, 숫자, 특수 문자의 입력은 가능하지만 텍스트 서식은 지정할 수 없다.",
+      "항상 표시되도록 설정할 수 있으며, 메모 크기를 자동 조정할 수 있다."
+    ],
+    answer:2,
+    explain:"메모에서도 텍스트 서식 지정이 가능합니다."
+  }
+},
+{
+  title:"07. 찾기 및 바꾸기 (와일드카드)",
+  cards:[
+    {q:"와일드카드 문자(?,*) 자체를 찾으려면?", a:"물결표(~)를 앞에 입력"},
+    {q:"와일드카드 '*'는 무엇을 의미하는가?", a:"모든 문자(길이 상관없이)를 의미하는 만능 문자"}
+  ],
+  ox:[{q:"'?' 문자 자체를 찾으려면 앞에 '~'를 입력한다.", a:true, explain:"물결표(~)를 만능 문자 앞에 붙이면 '?'나 '*' 문자 자체를 검색할 수 있습니다."}],
+  mc:{
+    q:"찾을 내용에 만능 문자 '?'나 '*' 문자 자체를 찾는 방법은?",
+    options:[
+      "찾으려는 만능 문자 앞·뒤에 큰따옴표(\"\") 기호를 입력한다.",
+      "찾으려는 만능 문자 앞에 퍼센트(%) 기호를 입력한다.",
+      "찾으려는 만능 문자 앞에 느낌표(!) 기호를 입력한다.",
+      "찾으려는 만능 문자 앞에 물결표(~) 기호를 입력한다."
+    ],
+    answer:3,
+    explain:"물결표(~)가 정답입니다. 나머지 기호들은 해당 기능이 없습니다."
+  }
+},
+{
+  title:"08. 표시 형식 (사용자 지정 - 콤마)",
+  cards:[
+    {q:"서식 맨 끝에 콤마(,)를 넣으면?", a:"천 단위 이하가 생략되고 반올림된 값 표시"},
+    {q:"통화 형식과 회계 형식의 차이는?", a:"통화: 숫자 바로 앞(₩100) / 회계: 셀 왼쪽 끝"}
+  ],
+  ox:[{q:"서식 끝에 콤마를 붙이면 천 단위가 생략되고 반올림된다.", a:true, explain:"사용자 지정 서식 맨 끝에 콤마(,)를 넣으면 천 단위 이하가 생략되고 반올림되어 표시됩니다."}],
+  mc:{
+    q:"숫자 '2234543' 입력 후 사용자 지정 표시 형식 결과로 옳지 않은 것은?",
+    options:[
+      "형식: #,##0.00 결과: 2,234,543.00",
+      "형식: 0.00 결과: 2234543.00",
+      "형식: #,###,\"천원\" 결과: 2,234천원",
+      "형식: #% 결과: 223454300%"
+    ],
+    answer:2,
+    explain:"올바른 결과는 '2,235천원'(반올림 적용)입니다."
+  }
+},
+{
+  title:"09. 셀 서식 표시 형식",
+  cards:[
+    {q:"통화 형식 기호 위치는?", a:"숫자 바로 앞"},
+    {q:"회계 형식에서 0은 어떻게 표시되는가?", a:"하이픈(-)으로 표시"}
+  ],
+  ox:[{q:"통화 형식은 숫자와 통화 기호가 셀 왼쪽 끝에 표시된다.", a:false, explain:"통화 기호는 숫자 바로 앞에 표시됩니다(회계 형식이 셀 왼쪽 끝에 표시됨)."}],
+  mc:{
+    q:"다음 중 셀 서식의 표시 형식에 대한 설명으로 옳지 않은 것은?",
+    options:[
+      "일반 형식으로 지정된 셀에 열 너비보다 긴 소수가 입력될 경우 셀 너비에 맞춰 반올림한 값으로 표시된다.",
+      "통화 형식은 숫자와 함께 기본 통화 기호가 셀의 왼쪽 끝에 표시되며, 통화 기호 표시 여부를 선택할 수 있다.",
+      "회계 형식은 음수 표시 형식을 별도로 지정할 수 없고, 0일 경우 하이픈(-)으로 표시된다.",
+      "숫자 형식은 음수의 표시 형식을 빨간색으로 지정할 수 있다."
+    ],
+    answer:1,
+    explain:"통화 기호는 숫자 바로 앞에 표시됩니다. (회계 형식이 왼쪽 끝 표시)"
+  }
+},
+{
+  title:"10. 조건부 서식 (MOD 함수)",
+  cards:[
+    {q:"MOD 함수의 기능은?", a:"MOD(수1,수2) - 수1을 수2로 나눈 나머지 반환"},
+    {q:"열 배경색 변경 시 혼합 참조를 쓰는 이유는?", a:"행(2)을 고정, 열은 상대참조 사용"}
+  ],
+  ox:[{q:"MOD(9,3)의 결과는 3이다.", a:false, explain:"MOD(9,3)은 9를 3으로 나눈 나머지이므로 결과는 0입니다."}],
+  mc:{
+    q:"[B2:I11]에서 3단,6단,9단 배경색 변경 조건부 서식 수식으로 옳은 것은?",
+    options:["=MOD($B2,3)=0","=MOD(B$2,3)=0","=(B$2/3)=0","=($B2/3)=0"],
+    answer:1,
+    explain:"열의 배경색 변경이므로 2행 고정하는 혼합참조(B$2)가 필요합니다."
+  }
+},
+{
+  title:"11. 이름 정의 규칙",
+  cards:[
+    {q:"이름 정의 시 첫 글자로 사용 가능한 특수문자는?", a:"밑줄(_)"},
+    {q:"여러 시트에서 동일한 이름을 정의할 수 있는가?", a:"불가능함"}
+  ],
+  ox:[{q:"여러 시트에서 동일한 이름으로 정의 가능하다.", a:false, explain:"동일한 이름은 여러 시트에서 중복하여 정의할 수 없습니다."}],
+  mc:{
+    q:"이름 정의 시 이름의 지정 방법에 대한 설명으로 옳지 않은 것은?",
+    options:[
+      "이름의 첫 글자로 밑줄(_)을 사용할 수 있다.",
+      "이름에 공백 문자는 포함할 수 없다.",
+      "'A1'과 같은 셀 참조 주소 이름은 사용할 수 없다.",
+      "여러 시트에서 동일한 이름으로 정의할 수 있다."
+    ],
+    answer:3,
+    explain:"여러 시트에서 동일한 이름 정의는 불가능합니다."
+  }
+},
+{
+  title:"12. YEAR/TODAY 함수",
+  cards:[
+    {q:"현재 날짜를 반환하는 함수는?", a:"TODAY()"},
+    {q:"날짜에서 연도만 추출하는 함수는?", a:"YEAR()"}
+  ],
+  ox:[{q:"YEAR(TODAY())로 현재 연도를 구할 수 있다.", a:true, explain:"TODAY()로 현재 날짜를 구하고 YEAR()로 연도만 추출하는 중첩 함수식입니다."}],
+  mc:{
+    q:"시스템의 현재 날짜에서 연도를 구하는 함수식으로 옳은 것은?",
+    options:["=DAYS(YEAR())","=DAY(YEAR())","=YEAR(TODAY())","=YEAR(DATE())"],
+    answer:2,
+    explain:"TODAY()로 현재 날짜, YEAR()로 연도를 추출하는 중첩 함수를 사용합니다."
+  }
+},
+{
+  title:"13. AND/OR 함수 중첩 (합격 판정)",
+  cards:[
+    {q:"AND 함수의 특징은?", a:"모든 조건이 TRUE일 때만 TRUE 반환"},
+    {q:"두 과목 40점 이상 AND 평균 60점 이상 조건식은?", a:"=IF(AND(AND(B4>=40,C4>=40),D4>=60),\"합격\",\" \")"}
+  ],
+  ox:[{q:"AND(6<5,7>5)의 결과는 TRUE이다.", a:false, explain:"6<5는 FALSE이므로 AND의 결과는 FALSE입니다."}],
+  mc:{
+    q:"'컴퓨터일반','스프레드시트일반' 40점 이상, '평균' 60점 이상 '합격' 표시 함수식으로 옳은 것은?",
+    options:[
+      "=IF(AND(AND(B4,C4>=40),D4>=60),\"합격\",\" \")",
+      "=IF(OR(AND(B4>=40,C4>=40),D4>=60),\"합격\",\" \")",
+      "=IF(AND(OR(B4>=40,C4>=40),D4>=60),\"합격\",\" \")",
+      "=IF(AND(AND(B4>=40,C4>=40),D4>=60),\"합격\",\" \")"
+    ],
+    answer:3,
+    explain:"①은 B4 조건식 오류, ②③은 OR을 사용해 조건이 완화됩니다."
+  }
+},
+{
+  title:"14. 함수식 결과값 (MOD,COLUMN,TRUNC,POWER)",
+  cards:[
+    {q:"POWER(수1,수2) 함수의 기능은?", a:"수1을 수2만큼 거듭제곱"},
+    {q:"TRUNC(숫자) 함수는 무엇을 하는가?", a:"소수점 이하를 절사(자릿수 생략 시)"}
+  ],
+  ox:[{q:"POWER(5,3)의 결과는 15이다.", a:false, explain:"POWER(5,3)은 5를 3번 거듭제곱한 값(5×5×5=125)입니다."}],
+  mc:{
+    q:"다음 중 함수식에 대한 결과가 옳지 않은 것은?",
+    options:["=MOD(9,2) → 1","=COLUMN(C5) → 3","=TRUNC(8.73) → 8","=POWER(5,3) → 15"],
+    answer:3,
+    explain:"POWER(5,3)=5×5×5=125가 정답입니다."
+  }
+},
+{
+  title:"15. 함수식 결과값 (COUNT,COUNTA,MAX,ROUND)",
+  cards:[
+    {q:"COUNT 함수에서 텍스트 형식 숫자('1')는?", a:"직접 입력 시 숫자로 인식됨"},
+    {q:"ROUND(215.143,-2)의 결과는?", a:"200 (100의 자리까지 반올림)"}
+  ],
+  ox:[{q:"MAX(TRUE,\"10\",8,3)의 결과는 10이다.", a:true, explain:"텍스트 형태의 숫자 '10'은 숫자로 인식되어 최댓값 10이 반환됩니다."}],
+  mc:{
+    q:"다음 중 함수식에 대한 결과가 옳은 것은?",
+    options:[
+      "=COUNT(1,\"참\",TRUE,\"1\") → 1",
+      "=COUNTA(1,\"거짓\",TRUE,\"1\") → 2",
+      "=MAX(TRUE,\"10\",8,3) → 10",
+      "=ROUND(215.143,-2) → 215.14"
+    ],
+    answer:2,
+    explain:"①정답은 3, ②정답은 4, ④정답은 200 입니다."
+  }
+},
+{
+  title:"16. SUMIF 함수와 참조",
+  cards:[
+    {q:"SUMIF 함수의 구조는?", a:"SUMIF(범위,조건,합계범위)"},
+    {q:"채우기 핸들 사용 시 범위/합계범위는 어떤 참조?", a:"절대참조 (조건은 상대참조)"}
+  ],
+  ox:[{q:"SUMIF의 범위와 합계범위는 절대참조로 지정해야 한다.", a:true, explain:"채우기 핸들 사용 시 범위와 합계범위가 바뀌지 않도록 절대참조로 지정합니다."}],
+  mc:{
+    q:"[F3:F5]에 소속별 매출액 합계를 구할 때 [F3] 셀에 입력할 함수식으로 옳은 것은?",
+    options:[
+      "=SUMIF(B3:B16,E3,C3:C16)",
+      "=SUMIF(B$3:B$16,E$3,C$3:C$16)",
+      "=SUMIF($B$3:$B$16,E3,$C$3:$C$16)",
+      "=SUMIF($B3:$B16,$E3,$C3:$C16)"
+    ],
+    answer:2,
+    explain:"범위와 합계범위는 절대참조, 조건은 상대참조로 지정해야 채우기 핸들 사용 시 정확히 복사됩니다."
+  }
+},
+{
+  title:"17. RIGHT, SEARCH, ROUND, AND 함수",
+  cards:[
+    {q:"RIGHT(문자열,개수) 함수는?", a:"문자열 오른쪽에서 지정한 개수만큼 추출"},
+    {q:"SEARCH 함수는 무엇을 반환하는가?", a:"문자열1을 문자열2에서 찾은 위치(숫자)"}
+  ],
+  ox:[{q:"AND(6<5,7>5)의 결과는 TRUE이다.", a:false, explain:"6<5가 FALSE이므로 AND 결과는 FALSE입니다."}],
+  mc:{
+    q:"다음 중 함수식의 결과값이 옳지 않은 것은?",
+    options:[
+      "=RIGHT(\"Desktop\",5) → sktop",
+      "=SEARCH(\"t\",\"Desktop\") → 5",
+      "=ROUND(4.66,0) → 5",
+      "=AND(6<5,7>5) → TRUE"
+    ],
+    answer:3,
+    explain:"6<5는 FALSE이므로 AND 결과는 FALSE입니다."
+  }
+},
+{
+  title:"18. HLOOKUP vs VLOOKUP",
+  cards:[
+    {q:"HLOOKUP과 VLOOKUP의 차이는?", a:"데이터가 행 방향이면 HLOOKUP, 열 방향이면 VLOOKUP"},
+    {q:"HLOOKUP 마지막 인수 TRUE의 의미는?", a:"유사(크지 않은 유사값) 일치 허용"}
+  ],
+  ox:[{q:"데이터가 행 방향으로 나열되어 있으면 VLOOKUP을 사용한다.", a:false, explain:"데이터가 행 방향이면 HLOOKUP, 열 방향이면 VLOOKUP을 사용합니다."}],
+  mc:{
+    q:"[C2:G3] 참조하여 [C5] 점수값에 해당하는 학점을 [C6]에 구하는 함수식으로 옳은 것은?",
+    options:[
+      "=VLOOKUP(C5,C2:G3,2,TRUE)",
+      "=VLOOKUP(C5,C2:G3,2,FALSE)",
+      "=HLOOKUP(C5,C2:G3,2,TRUE)",
+      "=HLOOKUP(C5,C2:G3,2,FALSE)"
+    ],
+    answer:2,
+    explain:"데이터가 행 방향이므로 HLOOKUP 사용, 유사값 검색이므로 TRUE 사용."
+  }
+},
+{
+  title:"19. DAVERAGE 함수",
+  cards:[
+    {q:"DAVERAGE 함수의 구조는?", a:"DAVERAGE(데이터베이스,필드,조건범위)"},
+    {q:"DAVERAGE는 무엇을 계산하는가?", a:"조건을 만족하는 필드의 평균값"}
+  ],
+  ox:[{q:"SUMIF는 조건에 맞는 데이터의 개수를 구한다.", a:false, explain:"SUMIF는 개수가 아니라 조건에 맞는 값들의 합계를 구합니다(개수는 COUNTIF)."}],
+  mc:{
+    q:"수식 '=DAVERAGE(A4:E10,\"수확량\",A1:C2)'의 결과값으로 옳은 것은?",
+    options:["15","12","14","18"],
+    answer:1,
+    explain:"나무가 '배'이면서 높이가 10~20 사이인 수확량 평균 (14+10)/2=12."
+  }
+},
+{
+  title:"20. 정렬 기능",
+  cards:[
+    {q:"날짜 필드를 내림차순 정렬하면?", a:"최근 날짜 → 이전 날짜 순서"},
+    {q:"셀 색이나 글꼴 색으로 정렬 가능한가?", a:"가능함(조건부 서식 포함)"}
+  ],
+  ox:[{q:"날짜 내림차순 정렬은 이전 날짜에서 최근 날짜 순이다.", a:false, explain:"날짜 필드의 내림차순 정렬은 최근 날짜에서 이전 날짜 순으로 정렬됩니다."}],
+  mc:{
+    q:"다음 중 정렬 기능에 대한 설명으로 옳지 않은 것은?",
+    options:[
+      "머리글의 값이 정렬 작업에 포함되거나 제외되도록 설정할 수 있다.",
+      "날짜 필드 정렬에서 내림차순을 선택하면 이전 날짜에서 최근 날짜 순서로 정렬할 수 있다.",
+      "사용자 지정 목록을 사용하여 사용자가 정의한 순서대로 정렬할 수 있다.",
+      "셀 범위나 표 열의 서식을 직접/조건부 서식으로 설정한 경우 셀 색 또는 글꼴 색 기준 정렬 가능하다."
+    ],
+    answer:1,
+    explain:"내림차순은 최근 날짜에서 이전 날짜 순서로 정렬됩니다."
+  }
+},
+{
+  title:"21. 고급 필터 OR 조건",
+  cards:[
+    {q:"고급 필터에서 OR 조건은 어떻게 입력?", a:"조건을 서로 다른 행에 입력"},
+    {q:"고급 필터에서 AND 조건은 어떻게 입력?", a:"조건을 같은 행에 입력"}
+  ],
+  ox:[{q:"고급 필터 OR 조건은 같은 행에 입력한다.", a:false, explain:"OR 조건은 서로 다른 행에 입력해야 합니다. 같은 행은 AND 조건입니다."}],
+  mc:{
+    q:"성명이 '정'으로 시작하거나 출신지역이 '서울'인 데이터 추출 고급 필터 조건은?",
+    options:[
+      "성명(정*), 출신지역(서울) - 같은 행에 입력",
+      "성명(정*), 출신지역(서울) - 서로 다른 행에 입력",
+      "성명 열만 사용, 출신지역은 별도 시트",
+      "출신지역만 조건 지정"
+    ],
+    answer:1,
+    explain:"OR 조건이므로 조건이 서로 다른 행에 입력되어야 합니다."
+  }
+},
+{
+  title:"22. 텍스트 나누기",
+  cards:[
+    {q:"텍스트 나누기 실행 메뉴 경로는?", a:"[데이터]-[데이터 도구]-[텍스트 나누기]"},
+    {q:"[데이터 미리 보기]에서 열 순서 변경이 가능한가?", a:"불가능함(결과만 미리 보여줌)"}
+  ],
+  ox:[{q:"데이터 미리 보기에서 드래그로 열 순서를 변경할 수 있다.", a:false, explain:"데이터 미리 보기는 결과를 보여줄 뿐이며 열 순서 변경은 불가능합니다."}],
+  mc:{
+    q:"다음 중 [텍스트 나누기] 기능에 대한 설명으로 옳지 않은 것은?",
+    options:[
+      "영역 선택 후 [데이터]-[데이터 도구]-[텍스트 나누기] 클릭하면 [텍스트 마법사]가 실행된다.",
+      "[데이터 미리 보기]에서 나눠진 열을 선택 후 드래그하여 열의 순서를 변경할 수 있다.",
+      "각 열을 선택하여 데이터 서식을 지정할 수 있다.",
+      "일정한 열 너비 또는 구분 기호로 구분하여 데이터를 나눌 수 있다."
+    ],
+    answer:1,
+    explain:"데이터 미리 보기에서는 열 순서 변경이 불가능합니다."
+  }
+},
+{
+  title:"23. 부분합 실행",
+  cards:[
+    {q:"부분합에서 그룹의 모든 정보를 표시하려면?", a:"윤곽 기호에서 '+' 선택"},
+    {q:"SUBTOTAL 함수는 어떤 기능인가?", a:"부분합 계산 항목에 자동 입력되는 함수(합계,평균 등)"}
+  ],
+  ox:[{q:"그룹의 모든 정보를 보려면 윤곽 기호 '-'를 클릭한다.", a:false, explain:"모든 정보를 표시하려면 '-'가 아니라 '+' 기호를 클릭해야 합니다."}],
+  mc:{
+    q:"아래 워크시트의 부분합 실행 결과에 대한 설명으로 옳지 않은 것은?",
+    options:[
+      "[부분합] 대화상자에서 그룹화할 항목을 '소속'으로 설정하였다.",
+      "그룹의 모든 정보 데이터를 표시하려면 윤곽 기호에서 '-'를 클릭하면 된다.",
+      "부분합 실행 시 [데이터 아래에 요약 표시]를 선택 해제하면 데이터 위에 요약을 표시할 수 있다.",
+      "[부분합 계산 항목]으로 선택된 항목에는 SUBTOTAL 함수가 자동 입력되어 최댓값과 평균이 계산되었다."
+    ],
+    answer:1,
+    explain:"모든 정보 표시는 '-'가 아닌 '+'를 선택해야 합니다."
+  }
+},
+{
+  title:"24. 데이터 통합",
+  cards:[
+    {q:"'원본 데이터에 연결' 옵션은 언제 사용?", a:"통합할 데이터와 결과 워크시트가 다른 통합 문서에 있을 때"},
+    {q:"여러 통합 문서 간 데이터 통합이 가능한가?", a:"가능함"}
+  ],
+  ox:[{q:"여러 시트나 통합 문서의 데이터를 통합할 수 없다.", a:false, explain:"여러 시트나 다른 통합 문서에 있는 데이터도 통합할 수 있습니다."}],
+  mc:{
+    q:"다음 중 데이터 통합에 관한 설명으로 옳지 않은 것은?",
+    options:[
+      "데이터 통합은 위치를 기준으로 통합할 수도 있고, 영역의 이름을 정의하여 통합할 수도 있다.",
+      "'원본 데이터에 연결' 기능은 통합할 데이터와 결과 워크시트가 다른 통합 문서에 있는 경우에만 적용 가능하다.",
+      "다른 원본 영역의 레이블과 일치하지 않는 레이블이 있는 경우 통합하면 별도의 행이나 열이 만들어진다.",
+      "여러 시트에 있는 데이터나 다른 통합 문서에 입력되어 있는 데이터를 통합할 수 없다."
+    ],
+    answer:3,
+    explain:"여러 시트/통합 문서 간 데이터 통합이 가능합니다."
+  }
+},
+{
+  title:"25. 목표값 찾기",
+  cards:[
+    {q:"목표값 찾기는 언제 사용하는가?", a:"결과값은 알지만 그 결과를 위한 입력값을 구할 때"},
+    {q:"목표값 찾기의 3요소는?", a:"수식 셀, 찾는 값, 값을 바꿀 셀"}
+  ],
+  ox:[{q:"'값을 바꿀 셀'은 변동되어야 할 셀을 의미한다.", a:true, explain:"값을 바꿀 셀은 목표값을 얻기 위해 값이 변동되어야 하는 셀입니다."}],
+  mc:{
+    q:"목표값 찾기 설정(수식 셀:E4, 찾는 값:40, 값을 바꿀 셀:B4)의 의미로 옳은 것은?",
+    options:[
+      "평균이 40이 되려면 노트북 판매량이 얼마가 되어야 하는가?",
+      "노트북 판매량이 40이 되려면 평균이 얼마가 되어야 하는가?",
+      "노트북 판매량을 40으로 변경하였을 때 평균은 얼마가 되어야 하는가?",
+      "평균이 40이 되려면 나머지 제품의 판매량이 얼마가 되어야 하는가?"
+    ],
+    answer:0,
+    explain:"값을 바꿀 셀이 노트북 판매량(B4)이므로, 평균(E4)이 40이 되기 위한 노트북 판매량을 구하는 것입니다."
+  }
+},
+{
+  title:"26. 시나리오 요약 보고서",
+  cards:[
+    {q:"시나리오 값 변경 시 기존 보고서는?", a:"자동으로 재계산되지 않음(다시 작성 필요)"},
+    {q:"시나리오 요약 보고서 실행 전 준비사항은?", a:"변경 셀과 결과 셀에 이름 정의"}
+  ],
+  ox:[{q:"시나리오 값 변경 시 기존 보고서가 자동 갱신된다.", a:false, explain:"시나리오 값을 변경해도 이미 작성된 요약 보고서는 자동으로 재계산되지 않으므로 다시 작성해야 합니다."}],
+  mc:{
+    q:"아래 시나리오 요약 보고서에 대한 설명으로 옳지 않은 것은?",
+    options:[
+      "노트북, 프린터, 스캐너값의 변화에 따른 평균값을 확인할 수 있다.",
+      "'경기 호황'과 '경기 불황' 시나리오에 대한 시나리오 요약 보고서이다.",
+      "시나리오의 값을 변경하면 해당 변경 내용이 기존 요약 보고서에 자동으로 다시 계산되어 표시된다.",
+      "시나리오 요약 보고서를 실행하기 전에 변경 셀과 결과 셀에 대해 이름을 정의하였다."
+    ],
+    answer:2,
+    explain:"시나리오 값 변경 시 자동 재계산되지 않으므로 보고서를 다시 작성해야 합니다."
+  }
+},
+{
+  title:"27. 피벗 테이블",
+  cards:[
+    {q:"피벗 테이블 삭제 시 피벗 차트는?", a:"일반 차트로 변경됨(자동 삭제 아님)"},
+    {q:"원본 자료 변경 시 피벗 테이블 반영 방법은?", a:"[모두 새로 고침] 기능 사용"}
+  ],
+  ox:[{q:"피벗 테이블 삭제 시 피벗 차트도 자동 삭제된다.", a:false, explain:"피벗 테이블을 삭제해도 피벗 차트는 삭제되지 않고 일반 차트로 변경됩니다."}],
+  mc:{
+    q:"다음 중 피벗 테이블에 대한 설명으로 옳지 않은 것은?",
+    options:[
+      "원본의 자료가 변경되면 [모두 새로 고침] 기능을 이용하여 일괄 피벗 테이블에 반영할 수 있다.",
+      "작성된 피벗 테이블을 삭제하는 경우 함께 작성한 피벗 차트는 자동으로 삭제된다.",
+      "피벗 테이블을 삭제하려면 피벗 테이블 전체를 범위로 지정한 후 Delete를 누른다.",
+      "피벗 테이블의 삽입 위치는 새 워크시트뿐만 아니라 기존 워크시트에서도 선택할 수 있다."
+    ],
+    answer:1,
+    explain:"피벗 테이블 삭제 시 피벗 차트는 일반 차트로 변경됩니다(자동 삭제 아님)."
+  }
+},
+{
+  title:"28. 차트 종류",
+  cards:[
+    {q:"방사형 차트의 특징은?", a:"많은 데이터 계열의 집계값 비교, 같은 계열 값은 선으로 연결"},
+    {q:"거품형 차트의 특징은?", a:"데이터 계열 간 항목 비교(분산형의 한 종류)"}
+  ],
+  ox:[{q:"방사형 차트는 분산형 차트의 한 종류이다.", a:false, explain:"분산형 차트의 한 종류는 거품형 차트입니다. 방사형 차트는 많은 데이터 계열의 집계값을 비교할 때 사용됩니다."}],
+  mc:{
+    q:"다음 중 차트에 대한 설명으로 옳지 않은 것은?",
+    options:[
+      "표면형 차트는 두 개의 데이터 집합에서 최적의 조합을 찾을 때 사용한다.",
+      "방사형 차트는 분산형 차트의 한 종류로 데이터 계열 간의 항목 비교에 사용된다.",
+      "분산형 차트는 데이터의 불규칙한 간격이나 묶음을 보여주는 것으로 과학/공학용 분석에 사용된다.",
+      "이중 축 차트는 특정 데이터 계열 값이 다른 계열과 차이가 크거나 단위가 다를 때 사용한다."
+    ],
+    answer:1,
+    explain:"거품형 차트에 대한 설명입니다. 방사형 차트는 많은 데이터 계열의 집계값을 비교할 때 사용됩니다."
+  }
+},
+{
+  title:"29. 차트 구성 요소",
+  cards:[
+    {q:"차트의 주요 구성 요소는?", a:"차트 제목, 범례, 데이터 레이블, 눈금선 등"},
+    {q:"보조 눈금선의 역할은?", a:"주 눈금선 사이 세부 구분선(설정 시에만 표시)"}
+  ],
+  ox:[{q:"눈금선은 항상 자동으로 표시된다.", a:false, explain:"보조 눈금선 등은 사용자가 별도로 설정해야 표시됩니다."}],
+  mc:{
+    q:"아래 차트(제목/범례/데이터 레이블 표시)에 설정되어 있지 않은 구성 요소는?",
+    options:["차트 제목","가로(항목) 축 보조 눈금선","데이터 레이블","범례"],
+    answer:1,
+    explain:"보조 눈금선은 표시되어 있지 않습니다. 나머지 요소는 모두 표시됩니다."
+  }
+},
+{
+  title:"30. 매크로 특징",
+  cards:[
+    {q:"기록한 매크로 편집은 어떻게?", a:"[개발 도구]-[코드]-[매크로]-[편집] 클릭"},
+    {q:"매크로 바로 가기 키와 엑셀 기본 단축키 우선순위는?", a:"매크로 바로 가기 키가 우선함"}
+  ],
+  ox:[{q:"기록한 매크로는 편집할 수 없다.", a:false, explain:"기록한 매크로는 [개발 도구]-[코드]-[매크로]-[편집]을 통해 얼마든지 편집할 수 있습니다."}],
+  mc:{
+    q:"다음 중 매크로의 특징에 대한 설명으로 옳지 않은 것은?",
+    options:[
+      "매크로 기록 시작 후 키보드/마우스 동작은 VBA로 자동 생성된다.",
+      "기록한 매크로는 편집할 수 없으므로 기능 추가/삭제가 불가능하다.",
+      "매크로 실행의 바로 가기 키가 엑셀의 바로 가기 키보다 우선한다.",
+      "도형에 매크로를 지정한 후 실행할 수 있다."
+    ],
+    answer:1,
+    explain:"매크로는 [개발 도구]-[코드]-[매크로]-[편집]으로 편집 가능하며, 기능 추가/삭제 가능합니다."
+  }
+}
+];
+
+/* ===================== 상태 ===================== */
+let state = {
+  student: {grade:'', classNum:'', number:'', name:''},
+  totalQuestions: QUESTIONS.length,
+  rangeIndex: 0,
+  order: 'sequential',
+  mode: 'normal',
+  quizQueue: [],
+  qPos: 0,
+  step: 0,
+  results: [],
+  retryQueue: [],
+  retryPos: 0,
+  retryResults: [],
+  pendingWrongList: []
+};
+
+const main = document.getElementById('main');
+const progressWrap = document.getElementById('progressWrap');
+const progressBar = document.getElementById('progressBar');
+const progressText = document.getElementById('progressText');
+const headerTitle = document.getElementById('headerTitle');
+
+/* ===================== 유틸 ===================== */
+function getRangeChunks(){
+  const chunks=[];
+  for(let i=0;i<state.totalQuestions;i+=10){
+    chunks.push({start:i, end:Math.min(i+10,state.totalQuestions)-1});
+  }
+  return chunks;
+}
+
+/* ===== 결과 전송: 숨김 iframe + form 제출 방식 (CORS 우회, 가장 안정적) ===== */
+function sendResultsToSheet(payload){
+  return new Promise((resolve)=>{
+    try{
+      document.getElementById('fGrade').value = payload.student.grade;
+      document.getElementById('fClassNum').value = payload.student.classNum;
+      document.getElementById('fNumber').value = payload.student.number;
+      document.getElementById('fName').value = payload.student.name;
+      document.getElementById('fScore').value = payload.score;
+      document.getElementById('fTotal').value = payload.total;
+
+      const iframe = document.getElementById('hiddenSubmitFrame');
+      let done = false;
+
+      const finish = ()=>{
+        if(done) return;
+        done = true;
+        resolve(true);
+      };
+
+      iframe.onload = finish;
+      // 혹시 onload가 안 잡히는 브라우저 대비 안전장치(2.5초 후 강제 진행)
+      setTimeout(finish, 2500);
+
+      document.getElementById('hiddenSubmitForm').submit();
+    }catch(err){
+      console.warn('전송 중 오류:', err);
+      resolve(false);
+    }
+  });
+}
+
+/* 콤보박스 옵션 생성 헬퍼 */
+function buildOptions(min, max, selected, unit){
+  let html = `<option value="">선택</option>`;
+  for(let i=min;i<=max;i++){
+    const sel = (String(selected) === String(i)) ? 'selected' : '';
+    html += `<option value="${i}" ${sel}>${i}${unit||''}</option>`;
+  }
+  return html;
+}
+
+/* 4지선다 선택지 무작위 셔플 (원본 데이터는 변경하지 않음) */
+function getShuffledMC(mc){
+  const idxArr = mc.options.map((_,i)=>i);
+  for(let i=idxArr.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [idxArr[i], idxArr[j]] = [idxArr[j], idxArr[i]];
+  }
+  const shuffledOptions = idxArr.map(i=>mc.options[i]);
+  const newAnswerIdx = idxArr.indexOf(mc.answer);
+  return { q: mc.q, options: shuffledOptions, answer: newAnswerIdx, explain: mc.explain };
+}
+
+/* ===================== 1. 학생 정보 입력 (콤보박스) ===================== */
+function renderStudentForm(){
+  progressWrap.classList.add('hidden');
+  progressText.classList.add('hidden');
+  headerTitle.textContent = "컴활 2급 · 2과목 스프레드시트";
+  main.innerHTML = `
+    <div class="start-screen" style="text-align:left;">
+      <h2 style="text-align:center;">🙋 내 정보 입력</h2>
+      <p style="text-align:center;">학년 / 반 / 번호 / 이름을 선택·입력해주세요</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label>학년</label>
+          <select id="inGrade">${buildOptions(1,3,state.student.grade,'학년')}</select>
+        </div>
+        <div class="form-group">
+          <label>반</label>
+          <select id="inClass">${buildOptions(1,6,state.student.classNum,'반')}</select>
+        </div>
+        <div class="form-group">
+          <label>번호</label>
+          <select id="inNumber">${buildOptions(1,22,state.student.number,'번')}</select>
+        </div>
+      </div>
+      <div class="form-group full"><label>이름</label><input type="text" id="inName" placeholder="이름을 입력하세요" value="${state.student.name}"></div>
+      <div id="formError" style="color:#dc2626; font-size:13px; font-weight:600; margin-bottom:10px; display:none;"></div>
+      <button class="big-btn" onclick="submitStudentForm()">다음 ▶</button>
+    </div>
+  `;
+}
+
+function submitStudentForm(){
+  const gradeVal = document.getElementById('inGrade').value;
+  const classVal = document.getElementById('inClass').value;
+  const numberVal = document.getElementById('inNumber').value;
+  const name = document.getElementById('inName').value.trim();
+  const errorBox = document.getElementById('formError');
+
+  const grade = parseInt(gradeVal);
+  const classNum = parseInt(classVal);
+  const number = parseInt(numberVal);
+
+  let errors = [];
+
+  if(!gradeVal || isNaN(grade) || grade < 1 || grade > 3){
+    errors.push('학년을 선택해주세요. (1~3)');
+  }
+  if(!classVal || isNaN(classNum) || classNum < 1 || classNum > 6){
+    errors.push('반을 선택해주세요. (1~6)');
+  }
+  if(!numberVal || isNaN(number) || number < 1 || number > 22){
+    errors.push('번호를 선택해주세요. (1~22)');
+  }
+  if(!name){
+    errors.push('이름을 입력해주세요.');
+  }
+
+  if(errors.length > 0){
+    errorBox.style.display = 'block';
+    errorBox.innerHTML = errors.map(e=>`⚠️ ${e}`).join('<br>');
+    return;
+  }
+
+  errorBox.style.display = 'none';
+  state.student = {grade: grade, classNum: classNum, number: number, name};
+  renderSetupScreen();
+}
+
+/* ===================== 2. 안내(설정) 화면 ===================== */
+function renderSetupScreen(){
+  progressWrap.classList.add('hidden');
+  progressText.classList.add('hidden');
+  headerTitle.textContent = `${state.student.grade}학년 ${state.student.classNum}반 ${state.student.number}번 ${state.student.name}`;
+
+  const chunks = getRangeChunks();
+  const chunkHtml = chunks.map((c,i)=>`
+    <button class="chip-btn ${state.rangeIndex===i?'active':''}" onclick="selectRange(${i})">${c.start+1}~${c.end+1}번</button>
+  `).join('');
+
+  main.innerHTML = `
+    <div class="start-screen">
+      <h2>📊 스프레드시트 일반</h2>
+      <div class="total-badge">총 문제 수: ${state.totalQuestions}문제</div>
+      <div class="section-label">📌 문제 범위 선택 (10문제 단위)</div>
+      <div class="chip-group">${chunkHtml}</div>
+      <div class="section-label">🔀 출제 순서</div>
+      <div class="chip-group">
+        <button class="chip-btn ${state.order==='sequential'?'active':''}" onclick="selectOrder('sequential')">순서대로</button>
+        <button class="chip-btn ${state.order==='random'?'active':''}" onclick="selectOrder('random')">무작위</button>
+      </div>
+      <button class="big-btn" onclick="startQuiz()">🚀 학습 시작하기</button>
+      <button class="big-btn secondary" onclick="renderStudentForm()">👤 정보 다시 입력</button>
+    </div>
+  `;
+}
+
+function selectRange(i){ state.rangeIndex = i; renderSetupScreen(); }
+function selectOrder(o){ state.order = o; renderSetupScreen(); }
+
+/* ===================== 3. 퀴즈 시작 ===================== */
+function startQuiz(){
+  const chunks = getRangeChunks();
+  const c = chunks[state.rangeIndex];
+  let list = [];
+  for(let i=c.start;i<=c.end;i++){
+    list.push({originalIndex:i, data:QUESTIONS[i]});
+  }
+  if(state.order === 'random'){
+    for(let i=list.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [list[i],list[j]] = [list[j],list[i]];
+    }
+  }
+  state.mode = 'normal';
+  state.quizQueue = list;
+  state.qPos = 0;
+  state.step = 0;
+  state.results = [];
+  progressWrap.classList.remove('hidden');
+  progressText.classList.remove('hidden');
+  renderStep();
+}
+
+function updateProgress(){
+  if(state.mode === 'normal'){
+    const totalSteps = state.quizQueue.length*4;
+    const done = state.qPos*4 + state.step;
+    const pct = Math.min(100, Math.round(done/totalSteps*100));
+    progressBar.style.width = pct+'%';
+    progressText.textContent = `문제 ${state.qPos+1} / ${state.quizQueue.length} · ${state.student.name}`;
+    headerTitle.textContent = "📚 학습 진행 중";
+  } else {
+    const total = state.retryQueue.length;
+    const pct = Math.min(100, Math.round(state.retryPos/total*100));
+    progressBar.style.width = pct+'%';
+    progressText.textContent = `오답 재도전 ${state.retryPos+1} / ${total}`;
+    headerTitle.textContent = "🔁 틀린 문제 다시 풀기";
+  }
+}
+
+function renderStep(){
+  updateProgress();
+  const q = state.quizQueue[state.qPos].data;
+  if(state.step===0 || state.step===1) renderFlashcard(q, state.step);
+  else if(state.step===2) renderOX(q);
+  else if(state.step===3) renderMC(q, false);
+}
+
+/* ===== 개념 플래시카드 (2장) ===== */
+function renderFlashcard(q, idx){
+  const card = q.cards[idx];
+  main.innerHTML = `
+    <div class="step-badge">📇 플래시카드 ${idx+1}/2 · ${q.title}</div>
+    <div class="flip-hint">카드를 탭하면 답이 보여요</div>
+    <div class="flip-card" id="flipCard">
+      <div class="flip-inner">
+        <div class="flip-front">${card.q}</div>
+        <div class="flip-back">${card.a}</div>
+      </div>
+    </div>
+    <div class="card-nav">
+      <button class="big-btn secondary" onclick="prevStep()">이전</button>
+      <button class="big-btn" onclick="nextStep()">다음</button>
+    </div>
+  `;
+  document.getElementById('flipCard').addEventListener('click', function(){
+    this.classList.toggle('flipped');
+  });
+}
+
+/* ===== OX 플래시카드 (1장) ===== */
+function renderOX(q){
+  const ox = q.ox[0];
+  main.innerHTML = `
+    <div class="step-badge">⭕❌ OX 퀴즈 · ${q.title}</div>
+    <div class="flip-hint">O 또는 X를 선택하면 카드가 뒤집혀요</div>
+    <div class="flip-card ox-card" id="oxFlipCard">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <div class="ox-question-text">${ox.q}</div>
+          <div class="ox-btns-inner">
+            <button class="ox-btn o" id="btnO">O</button>
+            <button class="ox-btn x" id="btnX">X</button>
+          </div>
+        </div>
+        <div class="flip-back" id="oxBack"></div>
+      </div>
+    </div>
+    <div class="card-nav" id="oxNav" style="margin-top:16px;"></div>
+  `;
+
+  const btnO = document.getElementById('btnO');
+  const btnX = document.getElementById('btnX');
+  const flipCard = document.getElementById('oxFlipCard');
+  const backEl = document.getElementById('oxBack');
+  let answered = false;
+
+  function pick(val){
+    if(answered) return;
+    answered = true;
+    const correct = (val === ox.a);
+    backEl.classList.add(correct ? 'back-correct' : 'back-wrong');
+    backEl.innerHTML = `
+      <div class="ox-result-icon">${correct ? '✅' : '❌'}</div>
+      <div class="ox-result-title">${correct ? '정답입니다!' : '오답입니다!'}</div>
+      <div class="ox-result-sub">정답: ${ox.a ? 'O' : 'X'} · 내 선택: ${val ? 'O' : 'X'}</div>
+      <div class="ox-explain-text">${ox.explain}</div>
+    `;
+    setTimeout(()=>{ flipCard.classList.add('flipped'); }, 100);
+    document.getElementById('oxNav').innerHTML = `<button class="big-btn" onclick="nextStep()">다음 ▶</button>`;
+  }
+
+  btnO.addEventListener('click', ()=>pick(true));
+  btnX.addEventListener('click', ()=>pick(false));
+}
+
+/* ===== 문제 플래시카드 (4지선다, 매번 선택지 무작위 셔플) ===== */
+function renderMC(q, isRetry){
+  const mc = getShuffledMC(q.mc);
+
+  const optHtml = mc.options.map((opt,i)=>`
+    <button class="choice-btn" data-idx="${i}">${['①','②','③','④'][i]} ${opt}</button>
+  `).join('');
+
+  main.innerHTML = `
+    <div class="step-badge">📝 문제 풀이 ${isRetry?'(오답 재도전)':''} · ${q.title}</div>
+    <div class="flip-hint">보기를 선택하면 1초 후 결과가 나와요</div>
+    <div class="flip-card mc-card" id="mcFlipCard">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <div class="mc-front-inner">
+            <div class="quiz-question">${mc.q}</div>
+            <div id="choices">${optHtml}</div>
+          </div>
+        </div>
+        <div class="flip-back" id="mcBack"></div>
+      </div>
+    </div>
+    <div class="card-nav" id="mcNav" style="margin-top:16px;"></div>
+  `;
+
+  const btns = document.querySelectorAll('.choice-btn');
+  const flipCard = document.getElementById('mcFlipCard');
+  const backEl = document.getElementById('mcBack');
+  let answered = false;
+
+  btns.forEach(btn=>{
+    btn.addEventListener('click', function(){
+      if(answered) return;
+      answered = true;
+      const idx = parseInt(this.dataset.idx);
+      btns.forEach(b=>{
+        const bi = parseInt(b.dataset.idx);
+        if(bi === mc.answer) b.classList.add('correct');
+        else if(bi === idx) b.classList.add('wrong');
+        b.disabled = true;
+      });
+      const correct = idx === mc.answer;
+
+      setTimeout(()=>{
+        backEl.classList.add(correct ? 'back-correct' : 'back-wrong');
+        backEl.innerHTML = `
+          <div class="ox-result-icon">${correct ? '✅' : '❌'}</div>
+          <div class="ox-result-title">${correct ? '정답입니다!' : '오답입니다!'}</div>
+          <div class="ox-result-sub">정답: ${['①','②','③','④'][mc.answer]} ${mc.options[mc.answer]}</div>
+          <div class="ox-explain-text">${mc.explain}</div>
+        `;
+        flipCard.classList.add('flipped');
+
+        if(!isRetry){
+          state.results.push({no: state.quizQueue[state.qPos].originalIndex+1, title:q.title, correct});
+        } else {
+          state.retryResults.push({no: state.retryQueue[state.retryPos].originalIndex+1, title:q.title, correct});
+        }
+
+        const isLast = isRetry ? (state.retryPos >= state.retryQueue.length-1) : (state.qPos >= state.quizQueue.length-1);
+        const btnLabel = isRetry ? (isLast ? '결과 확인 🏁' : '다음 ▶') : (isLast ? '결과 제출 🏁' : '다음 문제 ▶');
+        const handler = isRetry ? 'advanceAfterRetryMC()' : 'advanceAfterMC()';
+
+        document.getElementById('mcNav').innerHTML = `<button class="big-btn" onclick="${handler}">${btnLabel}</button>`;
+      }, 1000);
+    });
+  });
+}
+
+function nextStep(){
+  if(state.step < 3){ state.step++; renderStep(); }
+}
+function prevStep(){
+  if(state.step > 0){ state.step--; renderStep(); }
+}
+
+function advanceAfterMC(){
+  if(state.qPos < state.quizQueue.length-1){
+    state.qPos++; state.step = 0; renderStep();
+  } else {
+    finishNormalRound();
+  }
+}
+
+function advanceAfterRetryMC(){
+  if(state.retryPos < state.retryQueue.length-1){
+    state.retryPos++; renderRetryStep();
+  } else {
+    finishRetryRound();
+  }
+}
+
+function renderRetryStep(){
+  updateProgress();
+  const q = state.retryQueue[state.retryPos].data;
+  renderMC(q, true);
+}
+
+/* ===================== 4. 결과 전송 + 오답 재도전 ===================== */
+function finishNormalRound(){
+  headerTitle.textContent = "📤 결과 전송 중...";
+  main.innerHTML = `
+    <div class="start-screen">
+      <h2>📤 결과를 전송하고 있어요...</h2>
+      <p>구글 스프레드시트에 결과를 저장하는 중입니다.<br>잠시만 기다려주세요.</p>
+      <div class="status-box status-wait" id="sendStatus">전송 요청 보내는 중...</div>
+    </div>
+  `;
+
+  const score = state.results.filter(r=>r.correct).length;
+  const total = state.results.length;
+
+  const payload = {
+    student: state.student,
+    score: score,
+    total: total
+  };
+
+  sendResultsToSheet(payload).then((ok)=>{
+    const statusBox = document.getElementById('sendStatus');
+    if(statusBox){
+      if(ok){
+        statusBox.className = 'status-box status-ok';
+        statusBox.textContent = '✅ 전송 완료! (스프레드시트에서 확인해보세요)';
+      } else {
+        statusBox.className = 'status-box status-fail';
+        statusBox.textContent = '⚠️ 전송에 실패했을 수 있어요. (진행은 계속됩니다)';
+      }
+    }
+    setTimeout(()=>{
+      const wrongList = state.quizQueue.filter((item,idx)=> state.results[idx] && state.results[idx].correct === false);
+      if(wrongList.length > 0){
+        renderRoundResultTransition(score, total, wrongList);
+      } else {
+        renderAllCorrectScreen(score, total);
+      }
+    }, 600);
+  });
+}
+
+function renderRoundResultTransition(score, total, wrongList){
+  state.pendingWrongList = wrongList;
+  main.innerHTML = `
+    <div class="start-screen">
+      <h2>✅ 결과 전송 완료</h2>
+      <p>이번 회차 점수: <b>${score} / ${total}</b></p>
+      <p style="color:#dc2626; font-weight:700;">틀린 문제 ${wrongList.length}개를 다시 풀어볼까요?</p>
+      <button class="big-btn" onclick="startRetryRound()">🔁 오답 다시 풀기</button>
+    </div>
+  `;
+}
+
+function renderAllCorrectScreen(score, total){
+  main.innerHTML = `
+    <div class="start-screen">
+      <h2>🎉 축하합니다!</h2>
+      <p>${total}문제 중 ${score}문제 모두 정답입니다!</p>
+      <button class="big-btn" onclick="backToSetup()">🏠 안내 화면으로</button>
+    </div>
+  `;
+}
+
+function startRetryRound(){
+  state.mode = 'retry';
+  state.retryQueue = state.pendingWrongList;
+  state.retryPos = 0;
+  state.retryResults = [];
+  renderRetryStep();
+}
+
+function finishRetryRound(){
+  const retryScore = state.retryResults.filter(r=>r.correct).length;
+  main.innerHTML = `
+    <div class="start-screen">
+      <h2>🎉 오답 학습 완료!</h2>
+      <p>재도전 결과: <b>${retryScore} / ${state.retryResults.length}</b></p>
+      <button class="big-btn" onclick="backToSetup()">🏠 안내 화면으로</button>
+    </div>
+  `;
+}
+
+function backToSetup(){
+  state.mode = 'normal';
+  progressWrap.classList.add('hidden');
+  progressText.classList.add('hidden');
+  renderSetupScreen();
+}
+
+/* ===================== 초기 진입 ===================== */
+renderStudentForm();
+</script>
+</body>
+</html>
+
+
+
+							<script>
+                            	function doPost(e) {
+  try {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+
+    // 헤더가 없으면 생성
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow(["순번", "전송날짜", "전송시간", "학년", "반", "번호", "이름", "맞은개수", "전체문제수"]);
+    }
+
+    var p = e.parameter; // 폼으로 전송된 값들
+
+    var lastRow = sheet.getLastRow();
+    var seq = lastRow; // 헤더 제외 순번
+
+    var now = new Date();
+    var dateStr = Utilities.formatDate(now, "Asia/Seoul", "yyyy-MM-dd");
+    var timeStr = Utilities.formatDate(now, "Asia/Seoul", "HH:mm:ss");
+
+    sheet.appendRow([
+      seq,
+      dateStr,
+      timeStr,
+      p.grade,
+      p.classNum,
+      p.number,
+      p.name,
+      p.score,
+      p.total
+    ]);
+
+    return ContentService
+      .createTextOutput(JSON.stringify({ result: "success", seq: seq }))
+      .setMimeType(ContentService.MimeType.JSON);
+
+  } catch (err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ result: "error", message: err.message }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+/* 배포 URL을 브라우저에서 직접 열었을 때 테스트용 (GET) */
+function doGet(e) {
+  return ContentService
+    .createTextOutput("이 웹앱은 정상적으로 배포되었습니다. (doPost 전용)")
+    .setMimeType(ContentService.MimeType.TEXT);
+}
+
+const GOOGLE_SCRIPT_URL = "여기에_복사한_exec_URL_붙여넣기";
+
+
+/* =========================================================
+   ⚠️ 구글 스프레드시트 연동 URL
+   Apps Script 배포 후 나온 웹앱 URL을 아래에 붙여넣으세요.
+   반드시 '/exec' 로 끝나는 URL이어야 합니다.
+========================================================= */
+const GOOGLE_SCRIPT_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL";
+
+// 폼의 action을 URL로 설정
+document.getElementById('hiddenSubmitForm').action = GOOGLE_SCRIPT_URL;
+
+/* ===================== 문제 데이터 ===================== */
+const QUESTIONS = [
+{
+  title:"01. 틀 고정 기능",
+  cards:[
+    {q:"틀 고정 선을 취소하는 방법은?", a:"[보기]-[창]-[틀 고정]-[틀 고정 취소] 선택 (더블클릭 아님)"},
+    {q:"틀 고정 형태는 인쇄 시 어떻게 적용되는가?", a:"화면에 표시되는 틀 고정 형태는 인쇄 시 적용되지 않음"}
+  ],
+  ox:[{q:"틀 고정 선을 더블클릭하면 틀 고정이 취소된다.", a:false, explain:"틀 고정은 더블클릭이 아닌 [보기]-[창]-[틀 고정]-[틀 고정 취소] 메뉴를 통해서만 취소할 수 있습니다."}],
+  mc:{
+    q:"다음 중 [보기] 탭-[창] 그룹-[틀 고정] 기능에 대한 설명으로 옳지 않은 것은?",
+    options:[
+      "워크시트를 스크롤할 때 특정 행이나 열이 한 자리에 계속 표시되도록 선택할 수 있는 기능이다.",
+      "첫 행과 첫 열을 고정하여 표시되도록 한 번에 설정할 수 있다.",
+      "틀 고정 선의 아무 곳이나 더블클릭하여 틀 고정을 취소할 수 있다.",
+      "화면에 표시되는 틀 고정 형태는 인쇄 시 적용되지 않는다."
+    ],
+    answer:2,
+    explain:"틀 고정은 더블클릭이 아닌 [보기]-[창]-[틀 고정]-[틀 고정 취소] 메뉴를 통해서만 취소 가능합니다."
+  }
+},
+{
+  title:"02. 창 나누기",
+  cards:[
+    {q:"창 나누기는 최대 몇 개로 분할 가능한가?", a:"최대 4개 부분"},
+    {q:"창 나누기 상태에서 추가로 나누기가 가능한가?", a:"불가능함 (현재 상태 유지하며 추가 불가)"}
+  ],
+  ox:[{q:"창 나누기 상태를 유지하면서 추가 창 나누기가 가능하다.", a:false, explain:"현재의 창 나누기 상태를 유지하면서 추가로 창 나누기를 지정하는 것은 불가능합니다."}],
+  mc:{
+    q:"다음 중 창 나누기에 대한 설명으로 옳지 않은 것은?",
+    options:[
+      "창 나누기를 실행하면 하나의 작업 창은 최대 4개 부분으로 나눌 수 있다.",
+      "첫 행과 첫 열을 제외한 나머지 셀에서 창 나누기를 수행하면 현재 셀의 위쪽과 왼쪽에 창 분할선이 생긴다.",
+      "현재의 창 나누기 상태를 유지하면서 추가로 창 나누기를 지정할 수 있다.",
+      "화면에 표시되는 창 나누기 형태는 인쇄 시 적용되지 않는다."
+    ],
+    answer:2,
+    explain:"창 나누기 상태 유지 중 추가 나누기는 불가능합니다."
+  }
+},
+{
+  title:"03. 시트 보호와 통합 문서 보호",
+  cards:[
+    {q:"'잠긴 셀 선택'을 허용하지 않으려면?", a:"[검토]-[보호]-[시트 보호]에서 해제 + [셀 서식]-[보호] 탭 '잠금' 확인"},
+    {q:"통합 문서 보호 '구조' 선택 시 제한되는 것은?", a:"워크시트의 변경 및 추가, 삭제 등의 변경"}
+  ],
+  ox:[{q:"통합 문서 보호는 셀 내용 변경 제한 기능이다.", a:false, explain:"통합 문서 보호는 셀 내용이 아니라 시트의 삽입·삭제·이동·숨기기·이름 바꾸기 등을 제한하는 기능입니다."}],
+  mc:{
+    q:"다음 중 시트 보호와 통합 문서 보호에 대한 설명으로 옳지 않은 것은?",
+    options:[
+      "시트 보호에서 '잠긴 셀 선택'을 허용하지 않으려면 시트 보호 설정 전 [셀 서식] 대화상자의 [보호] 탭에 '숨김' 항목이 선택되어 있어야 한다.",
+      "시트 보호 시 시트 보호 해제 암호를 지정할 수 있으며, 암호를 설정하지 않으면 모든 사용자가 보호를 해제하고 변경할 수 있다.",
+      "통합 문서 보호는 시트의 삽입, 삭제, 이동, 숨기기, 이름 바꾸기 등의 작업을 할 수 없도록 보호하는 것이다.",
+      "통합 문서 보호에서 보호할 대상으로 구조를 선택하면 워크시트의 변경 및 추가, 삭제 등의 변경이 제한된다."
+    ],
+    answer:0,
+    explain:"'숨김'이 아닌 '잠금' 항목 체크 확인이 필요합니다."
+  }
+},
+{
+  title:"04. 데이터 입력",
+  cards:[
+    {q:"셀 안에서 줄 바꿈하는 단축키는?", a:"Alt+Enter"},
+    {q:"여러 셀에 동일 데이터를 한번에 입력하는 단축키는?", a:"여러 셀 선택 후 데이터 입력 → Ctrl+Enter"}
+  ],
+  ox:[{q:"여러 셀 선택 후 Shift+Enter를 누르면 일괄 입력된다.", a:false, explain:"여러 셀에 동일한 데이터를 한번에 입력하려면 Shift+Enter가 아니라 Ctrl+Enter를 눌러야 합니다."}],
+  mc:{
+    q:"다음 중 데이터 입력에 대한 설명으로 옳지 않은 것은?",
+    options:[
+      "셀 안에서 줄 바꿈을 하려면 Alt+Enter를 누른다.",
+      "한 행을 블록 설정한 상태에서 Enter를 누르면 블록 내의 셀이 순차적으로 선택되어 행 단위 입력이 쉽다.",
+      "여러 셀에 데이터를 한 번에 입력하려면 여러 셀이 선택된 상태에서 데이터 입력 후 Shift+Enter를 누른다.",
+      "열 너비가 좁아 날짜를 표시하지 못하면 '#'이 반복 표시된다."
+    ],
+    answer:2,
+    explain:"Shift+Enter가 아닌 Ctrl+Enter를 눌러야 합니다."
+  }
+},
+{
+  title:"05. 자동 채우기 핸들",
+  cards:[
+    {q:"문자+숫자 혼합 데이터의 자동 채우기 규칙은?", a:"문자는 복사, 숫자는 1씩 증가"},
+    {q:"날짜 데이터 자동 채우기 규칙은?", a:"1일씩 증가"}
+  ],
+  ox:[{q:"문자와 숫자 혼합 데이터를 자동 채우기하면 문자도 증가한다.", a:false, explain:"문자+숫자 혼합 데이터의 자동 채우기는 문자는 그대로 복사되고 숫자만 1씩 증가합니다."}],
+  mc:{
+    q:"[A1:B1]에 '가-011','01월16일' 입력 후 [B3]까지 채우기 핸들 드래그 시 [A3],[B3] 값은?",
+    options:["다-011, 01월17일","가-013, 01월17일","가-013, 03월15일","다-011, 03월15일"],
+    answer:1,
+    explain:"문자는 복사(가), 숫자는 1씩 증가(011→012→013), 날짜는 1일씩 증가(16→17)."
+  }
+},
+{
+  title:"06. 메모",
+  cards:[
+    {q:"메모에 텍스트 서식 지정이 가능한가?", a:"가능함 (글꼴, 크기 등)"},
+    {q:"메모는 인쇄 시 어떻게 처리할 수 있는가?", a:"시트에 표시된 대로 인쇄하거나 시트 끝에 인쇄 가능"}
+  ],
+  ox:[{q:"메모에는 텍스트 서식을 지정할 수 없다.", a:false, explain:"메모에서도 글꼴, 크기 등 텍스트 서식을 지정할 수 있습니다."}],
+  mc:{
+    q:"다음 중 메모에 대한 설명으로 옳지 않은 것은?",
+    options:[
+      "셀에 입력된 내용에 대한 보충 설명을 기록할 때 사용하는 기능이다.",
+      "시트에 표시된 대로 인쇄하거나 시트의 끝에 인쇄할 수 있다.",
+      "문자, 숫자, 특수 문자의 입력은 가능하지만 텍스트 서식은 지정할 수 없다.",
+      "항상 표시되도록 설정할 수 있으며, 메모 크기를 자동 조정할 수 있다."
+    ],
+    answer:2,
+    explain:"메모에서도 텍스트 서식 지정이 가능합니다."
+  }
+},
+{
+  title:"07. 찾기 및 바꾸기 (와일드카드)",
+  cards:[
+    {q:"와일드카드 문자(?,*) 자체를 찾으려면?", a:"물결표(~)를 앞에 입력"},
+    {q:"와일드카드 '*'는 무엇을 의미하는가?", a:"모든 문자(길이 상관없이)를 의미하는 만능 문자"}
+  ],
+  ox:[{q:"'?' 문자 자체를 찾으려면 앞에 '~'를 입력한다.", a:true, explain:"물결표(~)를 만능 문자 앞에 붙이면 '?'나 '*' 문자 자체를 검색할 수 있습니다."}],
+  mc:{
+    q:"찾을 내용에 만능 문자 '?'나 '*' 문자 자체를 찾는 방법은?",
+    options:[
+      "찾으려는 만능 문자 앞·뒤에 큰따옴표(\"\") 기호를 입력한다.",
+      "찾으려는 만능 문자 앞에 퍼센트(%) 기호를 입력한다.",
+      "찾으려는 만능 문자 앞에 느낌표(!) 기호를 입력한다.",
+      "찾으려는 만능 문자 앞에 물결표(~) 기호를 입력한다."
+    ],
+    answer:3,
+    explain:"물결표(~)가 정답입니다. 나머지 기호들은 해당 기능이 없습니다."
+  }
+},
+{
+  title:"08. 표시 형식 (사용자 지정 - 콤마)",
+  cards:[
+    {q:"서식 맨 끝에 콤마(,)를 넣으면?", a:"천 단위 이하가 생략되고 반올림된 값 표시"},
+    {q:"통화 형식과 회계 형식의 차이는?", a:"통화: 숫자 바로 앞(₩100) / 회계: 셀 왼쪽 끝"}
+  ],
+  ox:[{q:"서식 끝에 콤마를 붙이면 천 단위가 생략되고 반올림된다.", a:true, explain:"사용자 지정 서식 맨 끝에 콤마(,)를 넣으면 천 단위 이하가 생략되고 반올림되어 표시됩니다."}],
+  mc:{
+    q:"숫자 '2234543' 입력 후 사용자 지정 표시 형식 결과로 옳지 않은 것은?",
+    options:[
+      "형식: #,##0.00 결과: 2,234,543.00",
+      "형식: 0.00 결과: 2234543.00",
+      "형식: #,###,\"천원\" 결과: 2,234천원",
+      "형식: #% 결과: 223454300%"
+    ],
+    answer:2,
+    explain:"올바른 결과는 '2,235천원'(반올림 적용)입니다."
+  }
+},
+{
+  title:"09. 셀 서식 표시 형식",
+  cards:[
+    {q:"통화 형식 기호 위치는?", a:"숫자 바로 앞"},
+    {q:"회계 형식에서 0은 어떻게 표시되는가?", a:"하이픈(-)으로 표시"}
+  ],
+  ox:[{q:"통화 형식은 숫자와 통화 기호가 셀 왼쪽 끝에 표시된다.", a:false, explain:"통화 기호는 숫자 바로 앞에 표시됩니다(회계 형식이 셀 왼쪽 끝에 표시됨)."}],
+  mc:{
+    q:"다음 중 셀 서식의 표시 형식에 대한 설명으로 옳지 않은 것은?",
+    options:[
+      "일반 형식으로 지정된 셀에 열 너비보다 긴 소수가 입력될 경우 셀 너비에 맞춰 반올림한 값으로 표시된다.",
+      "통화 형식은 숫자와 함께 기본 통화 기호가 셀의 왼쪽 끝에 표시되며, 통화 기호 표시 여부를 선택할 수 있다.",
+      "회계 형식은 음수 표시 형식을 별도로 지정할 수 없고, 0일 경우 하이픈(-)으로 표시된다.",
+      "숫자 형식은 음수의 표시 형식을 빨간색으로 지정할 수 있다."
+    ],
+    answer:1,
+    explain:"통화 기호는 숫자 바로 앞에 표시됩니다. (회계 형식이 왼쪽 끝 표시)"
+  }
+},
+{
+  title:"10. 조건부 서식 (MOD 함수)",
+  cards:[
+    {q:"MOD 함수의 기능은?", a:"MOD(수1,수2) - 수1을 수2로 나눈 나머지 반환"},
+    {q:"열 배경색 변경 시 혼합 참조를 쓰는 이유는?", a:"행(2)을 고정, 열은 상대참조 사용"}
+  ],
+  ox:[{q:"MOD(9,3)의 결과는 3이다.", a:false, explain:"MOD(9,3)은 9를 3으로 나눈 나머지이므로 결과는 0입니다."}],
+  mc:{
+    q:"[B2:I11]에서 3단,6단,9단 배경색 변경 조건부 서식 수식으로 옳은 것은?",
+    options:["=MOD($B2,3)=0","=MOD(B$2,3)=0","=(B$2/3)=0","=($B2/3)=0"],
+    answer:1,
+    explain:"열의 배경색 변경이므로 2행 고정하는 혼합참조(B$2)가 필요합니다."
+  }
+},
+{
+  title:"11. 이름 정의 규칙",
+  cards:[
+    {q:"이름 정의 시 첫 글자로 사용 가능한 특수문자는?", a:"밑줄(_)"},
+    {q:"여러 시트에서 동일한 이름을 정의할 수 있는가?", a:"불가능함"}
+  ],
+  ox:[{q:"여러 시트에서 동일한 이름으로 정의 가능하다.", a:false, explain:"동일한 이름은 여러 시트에서 중복하여 정의할 수 없습니다."}],
+  mc:{
+    q:"이름 정의 시 이름의 지정 방법에 대한 설명으로 옳지 않은 것은?",
+    options:[
+      "이름의 첫 글자로 밑줄(_)을 사용할 수 있다.",
+      "이름에 공백 문자는 포함할 수 없다.",
+      "'A1'과 같은 셀 참조 주소 이름은 사용할 수 없다.",
+      "여러 시트에서 동일한 이름으로 정의할 수 있다."
+    ],
+    answer:3,
+    explain:"여러 시트에서 동일한 이름 정의는 불가능합니다."
+  }
+},
+{
+  title:"12. YEAR/TODAY 함수",
+  cards:[
+    {q:"현재 날짜를 반환하는 함수는?", a:"TODAY()"},
+    {q:"날짜에서 연도만 추출하는 함수는?", a:"YEAR()"}
+  ],
+  ox:[{q:"YEAR(TODAY())로 현재 연도를 구할 수 있다.", a:true, explain:"TODAY()로 현재 날짜를 구하고 YEAR()로 연도만 추출하는 중첩 함수식입니다."}],
+  mc:{
+    q:"시스템의 현재 날짜에서 연도를 구하는 함수식으로 옳은 것은?",
+    options:["=DAYS(YEAR())","=DAY(YEAR())","=YEAR(TODAY())","=YEAR(DATE())"],
+    answer:2,
+    explain:"TODAY()로 현재 날짜, YEAR()로 연도를 추출하는 중첩 함수를 사용합니다."
+  }
+},
+{
+  title:"13. AND/OR 함수 중첩 (합격 판정)",
+  cards:[
+    {q:"AND 함수의 특징은?", a:"모든 조건이 TRUE일 때만 TRUE 반환"},
+    {q:"두 과목 40점 이상 AND 평균 60점 이상 조건식은?", a:"=IF(AND(AND(B4>=40,C4>=40),D4>=60),\"합격\",\" \")"}
+  ],
+  ox:[{q:"AND(6<5,7>5)의 결과는 TRUE이다.", a:false, explain:"6<5는 FALSE이므로 AND의 결과는 FALSE입니다."}],
+  mc:{
+    q:"'컴퓨터일반','스프레드시트일반' 40점 이상, '평균' 60점 이상 '합격' 표시 함수식으로 옳은 것은?",
+    options:[
+      "=IF(AND(AND(B4,C4>=40),D4>=60),\"합격\",\" \")",
+      "=IF(OR(AND(B4>=40,C4>=40),D4>=60),\"합격\",\" \")",
+      "=IF(AND(OR(B4>=40,C4>=40),D4>=60),\"합격\",\" \")",
+      "=IF(AND(AND(B4>=40,C4>=40),D4>=60),\"합격\",\" \")"
+    ],
+    answer:3,
+    explain:"①은 B4 조건식 오류, ②③은 OR을 사용해 조건이 완화됩니다."
+  }
+},
+{
+  title:"14. 함수식 결과값 (MOD,COLUMN,TRUNC,POWER)",
+  cards:[
+    {q:"POWER(수1,수2) 함수의 기능은?", a:"수1을 수2만큼 거듭제곱"},
+    {q:"TRUNC(숫자) 함수는 무엇을 하는가?", a:"소수점 이하를 절사(자릿수 생략 시)"}
+  ],
+  ox:[{q:"POWER(5,3)의 결과는 15이다.", a:false, explain:"POWER(5,3)은 5를 3번 거듭제곱한 값(5×5×5=125)입니다."}],
+  mc:{
+    q:"다음 중 함수식에 대한 결과가 옳지 않은 것은?",
+    options:["=MOD(9,2) → 1","=COLUMN(C5) → 3","=TRUNC(8.73) → 8","=POWER(5,3) → 15"],
+    answer:3,
+    explain:"POWER(5,3)=5×5×5=125가 정답입니다."
+  }
+},
+{
+  title:"15. 함수식 결과값 (COUNT,COUNTA,MAX,ROUND)",
+  cards:[
+    {q:"COUNT 함수에서 텍스트 형식 숫자('1')는?", a:"직접 입력 시 숫자로 인식됨"},
+    {q:"ROUND(215.143,-2)의 결과는?", a:"200 (100의 자리까지 반올림)"}
+  ],
+  ox:[{q:"MAX(TRUE,\"10\",8,3)의 결과는 10이다.", a:true, explain:"텍스트 형태의 숫자 '10'은 숫자로 인식되어 최댓값 10이 반환됩니다."}],
+  mc:{
+    q:"다음 중 함수식에 대한 결과가 옳은 것은?",
+    options:[
+      "=COUNT(1,\"참\",TRUE,\"1\") → 1",
+      "=COUNTA(1,\"거짓\",TRUE,\"1\") → 2",
+      "=MAX(TRUE,\"10\",8,3) → 10",
+      "=ROUND(215.143,-2) → 215.14"
+    ],
+    answer:2,
+    explain:"①정답은 3, ②정답은 4, ④정답은 200 입니다."
+  }
+},
+{
+  title:"16. SUMIF 함수와 참조",
+  cards:[
+    {q:"SUMIF 함수의 구조는?", a:"SUMIF(범위,조건,합계범위)"},
+    {q:"채우기 핸들 사용 시 범위/합계범위는 어떤 참조?", a:"절대참조 (조건은 상대참조)"}
+  ],
+  ox:[{q:"SUMIF의 범위와 합계범위는 절대참조로 지정해야 한다.", a:true, explain:"채우기 핸들 사용 시 범위와 합계범위가 바뀌지 않도록 절대참조로 지정합니다."}],
+  mc:{
+    q:"[F3:F5]에 소속별 매출액 합계를 구할 때 [F3] 셀에 입력할 함수식으로 옳은 것은?",
+    options:[
+      "=SUMIF(B3:B16,E3,C3:C16)",
+      "=SUMIF(B$3:B$16,E$3,C$3:C$16)",
+      "=SUMIF($B$3:$B$16,E3,$C$3:$C$16)",
+      "=SUMIF($B3:$B16,$E3,$C3:$C16)"
+    ],
+    answer:2,
+    explain:"범위와 합계범위는 절대참조, 조건은 상대참조로 지정해야 채우기 핸들 사용 시 정확히 복사됩니다."
+  }
+},
+{
+  title:"17. RIGHT, SEARCH, ROUND, AND 함수",
+  cards:[
+    {q:"RIGHT(문자열,개수) 함수는?", a:"문자열 오른쪽에서 지정한 개수만큼 추출"},
+    {q:"SEARCH 함수는 무엇을 반환하는가?", a:"문자열1을 문자열2에서 찾은 위치(숫자)"}
+  ],
+  ox:[{q:"AND(6<5,7>5)의 결과는 TRUE이다.", a:false, explain:"6<5가 FALSE이므로 AND 결과는 FALSE입니다."}],
+  mc:{
+    q:"다음 중 함수식의 결과값이 옳지 않은 것은?",
+    options:[
+      "=RIGHT(\"Desktop\",5) → sktop",
+      "=SEARCH(\"t\",\"Desktop\") → 5",
+      "=ROUND(4.66,0) → 5",
+      "=AND(6<5,7>5) → TRUE"
+    ],
+    answer:3,
+    explain:"6<5는 FALSE이므로 AND 결과는 FALSE입니다."
+  }
+},
+{
+  title:"18. HLOOKUP vs VLOOKUP",
+  cards:[
+    {q:"HLOOKUP과 VLOOKUP의 차이는?", a:"데이터가 행 방향이면 HLOOKUP, 열 방향이면 VLOOKUP"},
+    {q:"HLOOKUP 마지막 인수 TRUE의 의미는?", a:"유사(크지 않은 유사값) 일치 허용"}
+  ],
+  ox:[{q:"데이터가 행 방향으로 나열되어 있으면 VLOOKUP을 사용한다.", a:false, explain:"데이터가 행 방향이면 HLOOKUP, 열 방향이면 VLOOKUP을 사용합니다."}],
+  mc:{
+    q:"[C2:G3] 참조하여 [C5] 점수값에 해당하는 학점을 [C6]에 구하는 함수식으로 옳은 것은?",
+    options:[
+      "=VLOOKUP(C5,C2:G3,2,TRUE)",
+      "=VLOOKUP(C5,C2:G3,2,FALSE)",
+      "=HLOOKUP(C5,C2:G3,2,TRUE)",
+      "=HLOOKUP(C5,C2:G3,2,FALSE)"
+    ],
+    answer:2,
+    explain:"데이터가 행 방향이므로 HLOOKUP 사용, 유사값 검색이므로 TRUE 사용."
+  }
+},
+{
+  title:"19. DAVERAGE 함수",
+  cards:[
+    {q:"DAVERAGE 함수의 구조는?", a:"DAVERAGE(데이터베이스,필드,조건범위)"},
+    {q:"DAVERAGE는 무엇을 계산하는가?", a:"조건을 만족하는 필드의 평균값"}
+  ],
+  ox:[{q:"SUMIF는 조건에 맞는 데이터의 개수를 구한다.", a:false, explain:"SUMIF는 개수가 아니라 조건에 맞는 값들의 합계를 구합니다(개수는 COUNTIF)."}],
+  mc:{
+    q:"수식 '=DAVERAGE(A4:E10,\"수확량\",A1:C2)'의 결과값으로 옳은 것은?",
+    options:["15","12","14","18"],
+    answer:1,
+    explain:"나무가 '배'이면서 높이가 10~20 사이인 수확량 평균 (14+10)/2=12."
+  }
+},
+{
+  title:"20. 정렬 기능",
+  cards:[
+    {q:"날짜 필드를 내림차순 정렬하면?", a:"최근 날짜 → 이전 날짜 순서"},
+    {q:"셀 색이나 글꼴 색으로 정렬 가능한가?", a:"가능함(조건부 서식 포함)"}
+  ],
+  ox:[{q:"날짜 내림차순 정렬은 이전 날짜에서 최근 날짜 순이다.", a:false, explain:"날짜 필드의 내림차순 정렬은 최근 날짜에서 이전 날짜 순으로 정렬됩니다."}],
+  mc:{
+    q:"다음 중 정렬 기능에 대한 설명으로 옳지 않은 것은?",
+    options:[
+      "머리글의 값이 정렬 작업에 포함되거나 제외되도록 설정할 수 있다.",
+      "날짜 필드 정렬에서 내림차순을 선택하면 이전 날짜에서 최근 날짜 순서로 정렬할 수 있다.",
+      "사용자 지정 목록을 사용하여 사용자가 정의한 순서대로 정렬할 수 있다.",
+      "셀 범위나 표 열의 서식을 직접/조건부 서식으로 설정한 경우 셀 색 또는 글꼴 색 기준 정렬 가능하다."
+    ],
+    answer:1,
+    explain:"내림차순은 최근 날짜에서 이전 날짜 순서로 정렬됩니다."
+  }
+},
+{
+  title:"21. 고급 필터 OR 조건",
+  cards:[
+    {q:"고급 필터에서 OR 조건은 어떻게 입력?", a:"조건을 서로 다른 행에 입력"},
+    {q:"고급 필터에서 AND 조건은 어떻게 입력?", a:"조건을 같은 행에 입력"}
+  ],
+  ox:[{q:"고급 필터 OR 조건은 같은 행에 입력한다.", a:false, explain:"OR 조건은 서로 다른 행에 입력해야 합니다. 같은 행은 AND 조건입니다."}],
+  mc:{
+    q:"성명이 '정'으로 시작하거나 출신지역이 '서울'인 데이터 추출 고급 필터 조건은?",
+    options:[
+      "성명(정*), 출신지역(서울) - 같은 행에 입력",
+      "성명(정*), 출신지역(서울) - 서로 다른 행에 입력",
+      "성명 열만 사용, 출신지역은 별도 시트",
+      "출신지역만 조건 지정"
+    ],
+    answer:1,
+    explain:"OR 조건이므로 조건이 서로 다른 행에 입력되어야 합니다."
+  }
+},
+{
+  title:"22. 텍스트 나누기",
+  cards:[
+    {q:"텍스트 나누기 실행 메뉴 경로는?", a:"[데이터]-[데이터 도구]-[텍스트 나누기]"},
+    {q:"[데이터 미리 보기]에서 열 순서 변경이 가능한가?", a:"불가능함(결과만 미리 보여줌)"}
+  ],
+  ox:[{q:"데이터 미리 보기에서 드래그로 열 순서를 변경할 수 있다.", a:false, explain:"데이터 미리 보기는 결과를 보여줄 뿐이며 열 순서 변경은 불가능합니다."}],
+  mc:{
+    q:"다음 중 [텍스트 나누기] 기능에 대한 설명으로 옳지 않은 것은?",
+    options:[
+      "영역 선택 후 [데이터]-[데이터 도구]-[텍스트 나누기] 클릭하면 [텍스트 마법사]가 실행된다.",
+      "[데이터 미리 보기]에서 나눠진 열을 선택 후 드래그하여 열의 순서를 변경할 수 있다.",
+      "각 열을 선택하여 데이터 서식을 지정할 수 있다.",
+      "일정한 열 너비 또는 구분 기호로 구분하여 데이터를 나눌 수 있다."
+    ],
+    answer:1,
+    explain:"데이터 미리 보기에서는 열 순서 변경이 불가능합니다."
+  }
+},
+{
+  title:"23. 부분합 실행",
+  cards:[
+    {q:"부분합에서 그룹의 모든 정보를 표시하려면?", a:"윤곽 기호에서 '+' 선택"},
+    {q:"SUBTOTAL 함수는 어떤 기능인가?", a:"부분합 계산 항목에 자동 입력되는 함수(합계,평균 등)"}
+  ],
+  ox:[{q:"그룹의 모든 정보를 보려면 윤곽 기호 '-'를 클릭한다.", a:false, explain:"모든 정보를 표시하려면 '-'가 아니라 '+' 기호를 클릭해야 합니다."}],
+  mc:{
+    q:"아래 워크시트의 부분합 실행 결과에 대한 설명으로 옳지 않은 것은?",
+    options:[
+      "[부분합] 대화상자에서 그룹화할 항목을 '소속'으로 설정하였다.",
+      "그룹의 모든 정보 데이터를 표시하려면 윤곽 기호에서 '-'를 클릭하면 된다.",
+      "부분합 실행 시 [데이터 아래에 요약 표시]를 선택 해제하면 데이터 위에 요약을 표시할 수 있다.",
+      "[부분합 계산 항목]으로 선택된 항목에는 SUBTOTAL 함수가 자동 입력되어 최댓값과 평균이 계산되었다."
+    ],
+    answer:1,
+    explain:"모든 정보 표시는 '-'가 아닌 '+'를 선택해야 합니다."
+  }
+},
+{
+  title:"24. 데이터 통합",
+  cards:[
+    {q:"'원본 데이터에 연결' 옵션은 언제 사용?", a:"통합할 데이터와 결과 워크시트가 다른 통합 문서에 있을 때"},
+    {q:"여러 통합 문서 간 데이터 통합이 가능한가?", a:"가능함"}
+  ],
+  ox:[{q:"여러 시트나 통합 문서의 데이터를 통합할 수 없다.", a:false, explain:"여러 시트나 다른 통합 문서에 있는 데이터도 통합할 수 있습니다."}],
+  mc:{
+    q:"다음 중 데이터 통합에 관한 설명으로 옳지 않은 것은?",
+    options:[
+      "데이터 통합은 위치를 기준으로 통합할 수도 있고, 영역의 이름을 정의하여 통합할 수도 있다.",
+      "'원본 데이터에 연결' 기능은 통합할 데이터와 결과 워크시트가 다른 통합 문서에 있는 경우에만 적용 가능하다.",
+      "다른 원본 영역의 레이블과 일치하지 않는 레이블이 있는 경우 통합하면 별도의 행이나 열이 만들어진다.",
+      "여러 시트에 있는 데이터나 다른 통합 문서에 입력되어 있는 데이터를 통합할 수 없다."
+    ],
+    answer:3,
+    explain:"여러 시트/통합 문서 간 데이터 통합이 가능합니다."
+  }
+},
+{
+  title:"25. 목표값 찾기",
+  cards:[
+    {q:"목표값 찾기는 언제 사용하는가?", a:"결과값은 알지만 그 결과를 위한 입력값을 구할 때"},
+    {q:"목표값 찾기의 3요소는?", a:"수식 셀, 찾는 값, 값을 바꿀 셀"}
+  ],
+  ox:[{q:"'값을 바꿀 셀'은 변동되어야 할 셀을 의미한다.", a:true, explain:"값을 바꿀 셀은 목표값을 얻기 위해 값이 변동되어야 하는 셀입니다."}],
+  mc:{
+    q:"목표값 찾기 설정(수식 셀:E4, 찾는 값:40, 값을 바꿀 셀:B4)의 의미로 옳은 것은?",
+    options:[
+      "평균이 40이 되려면 노트북 판매량이 얼마가 되어야 하는가?",
+      "노트북 판매량이 40이 되려면 평균이 얼마가 되어야 하는가?",
+      "노트북 판매량을 40으로 변경하였을 때 평균은 얼마가 되어야 하는가?",
+      "평균이 40이 되려면 나머지 제품의 판매량이 얼마가 되어야 하는가?"
+    ],
+    answer:0,
+    explain:"값을 바꿀 셀이 노트북 판매량(B4)이므로, 평균(E4)이 40이 되기 위한 노트북 판매량을 구하는 것입니다."
+  }
+},
+{
+  title:"26. 시나리오 요약 보고서",
+  cards:[
+    {q:"시나리오 값 변경 시 기존 보고서는?", a:"자동으로 재계산되지 않음(다시 작성 필요)"},
+    {q:"시나리오 요약 보고서 실행 전 준비사항은?", a:"변경 셀과 결과 셀에 이름 정의"}
+  ],
+  ox:[{q:"시나리오 값 변경 시 기존 보고서가 자동 갱신된다.", a:false, explain:"시나리오 값을 변경해도 이미 작성된 요약 보고서는 자동으로 재계산되지 않으므로 다시 작성해야 합니다."}],
+  mc:{
+    q:"아래 시나리오 요약 보고서에 대한 설명으로 옳지 않은 것은?",
+    options:[
+      "노트북, 프린터, 스캐너값의 변화에 따른 평균값을 확인할 수 있다.",
+      "'경기 호황'과 '경기 불황' 시나리오에 대한 시나리오 요약 보고서이다.",
+      "시나리오의 값을 변경하면 해당 변경 내용이 기존 요약 보고서에 자동으로 다시 계산되어 표시된다.",
+      "시나리오 요약 보고서를 실행하기 전에 변경 셀과 결과 셀에 대해 이름을 정의하였다."
+    ],
+    answer:2,
+    explain:"시나리오 값 변경 시 자동 재계산되지 않으므로 보고서를 다시 작성해야 합니다."
+  }
+},
+{
+  title:"27. 피벗 테이블",
+  cards:[
+    {q:"피벗 테이블 삭제 시 피벗 차트는?", a:"일반 차트로 변경됨(자동 삭제 아님)"},
+    {q:"원본 자료 변경 시 피벗 테이블 반영 방법은?", a:"[모두 새로 고침] 기능 사용"}
+  ],
+  ox:[{q:"피벗 테이블 삭제 시 피벗 차트도 자동 삭제된다.", a:false, explain:"피벗 테이블을 삭제해도 피벗 차트는 삭제되지 않고 일반 차트로 변경됩니다."}],
+  mc:{
+    q:"다음 중 피벗 테이블에 대한 설명으로 옳지 않은 것은?",
+    options:[
+      "원본의 자료가 변경되면 [모두 새로 고침] 기능을 이용하여 일괄 피벗 테이블에 반영할 수 있다.",
+      "작성된 피벗 테이블을 삭제하는 경우 함께 작성한 피벗 차트는 자동으로 삭제된다.",
+      "피벗 테이블을 삭제하려면 피벗 테이블 전체를 범위로 지정한 후 Delete를 누른다.",
+      "피벗 테이블의 삽입 위치는 새 워크시트뿐만 아니라 기존 워크시트에서도 선택할 수 있다."
+    ],
+    answer:1,
+    explain:"피벗 테이블 삭제 시 피벗 차트는 일반 차트로 변경됩니다(자동 삭제 아님)."
+  }
+},
+{
+  title:"28. 차트 종류",
+  cards:[
+    {q:"방사형 차트의 특징은?", a:"많은 데이터 계열의 집계값 비교, 같은 계열 값은 선으로 연결"},
+    {q:"거품형 차트의 특징은?", a:"데이터 계열 간 항목 비교(분산형의 한 종류)"}
+  ],
+  ox:[{q:"방사형 차트는 분산형 차트의 한 종류이다.", a:false, explain:"분산형 차트의 한 종류는 거품형 차트입니다. 방사형 차트는 많은 데이터 계열의 집계값을 비교할 때 사용됩니다."}],
+  mc:{
+    q:"다음 중 차트에 대한 설명으로 옳지 않은 것은?",
+    options:[
+      "표면형 차트는 두 개의 데이터 집합에서 최적의 조합을 찾을 때 사용한다.",
+      "방사형 차트는 분산형 차트의 한 종류로 데이터 계열 간의 항목 비교에 사용된다.",
+      "분산형 차트는 데이터의 불규칙한 간격이나 묶음을 보여주는 것으로 과학/공학용 분석에 사용된다.",
+      "이중 축 차트는 특정 데이터 계열 값이 다른 계열과 차이가 크거나 단위가 다를 때 사용한다."
+    ],
+    answer:1,
+    explain:"거품형 차트에 대한 설명입니다. 방사형 차트는 많은 데이터 계열의 집계값을 비교할 때 사용됩니다."
+  }
+},
+{
+  title:"29. 차트 구성 요소",
+  cards:[
+    {q:"차트의 주요 구성 요소는?", a:"차트 제목, 범례, 데이터 레이블, 눈금선 등"},
+    {q:"보조 눈금선의 역할은?", a:"주 눈금선 사이 세부 구분선(설정 시에만 표시)"}
+  ],
+  ox:[{q:"눈금선은 항상 자동으로 표시된다.", a:false, explain:"보조 눈금선 등은 사용자가 별도로 설정해야 표시됩니다."}],
+  mc:{
+    q:"아래 차트(제목/범례/데이터 레이블 표시)에 설정되어 있지 않은 구성 요소는?",
+    options:["차트 제목","가로(항목) 축 보조 눈금선","데이터 레이블","범례"],
+    answer:1,
+    explain:"보조 눈금선은 표시되어 있지 않습니다. 나머지 요소는 모두 표시됩니다."
+  }
+},
+{
+  title:"30. 매크로 특징",
+  cards:[
+    {q:"기록한 매크로 편집은 어떻게?", a:"[개발 도구]-[코드]-[매크로]-[편집] 클릭"},
+    {q:"매크로 바로 가기 키와 엑셀 기본 단축키 우선순위는?", a:"매크로 바로 가기 키가 우선함"}
+  ],
+  ox:[{q:"기록한 매크로는 편집할 수 없다.", a:false, explain:"기록한 매크로는 [개발 도구]-[코드]-[매크로]-[편집]을 통해 얼마든지 편집할 수 있습니다."}],
+  mc:{
+    q:"다음 중 매크로의 특징에 대한 설명으로 옳지 않은 것은?",
+    options:[
+      "매크로 기록 시작 후 키보드/마우스 동작은 VBA로 자동 생성된다.",
+      "기록한 매크로는 편집할 수 없으므로 기능 추가/삭제가 불가능하다.",
+      "매크로 실행의 바로 가기 키가 엑셀의 바로 가기 키보다 우선한다.",
+      "도형에 매크로를 지정한 후 실행할 수 있다."
+    ],
+    answer:1,
+    explain:"매크로는 [개발 도구]-[코드]-[매크로]-[편집]으로 편집 가능하며, 기능 추가/삭제 가능합니다."
+  }
+}
+];
+
+/* ===================== 상태 ===================== */
+let state = {
+  student: {grade:'', classNum:'', number:'', name:''},
+  totalQuestions: QUESTIONS.length,
+  rangeIndex: 0,
+  order: 'sequential',
+  mode: 'normal',
+  quizQueue: [],
+  qPos: 0,
+  step: 0,
+  results: [],
+  retryQueue: [],
+  retryPos: 0,
+  retryResults: [],
+  pendingWrongList: []
+};
+
+const main = document.getElementById('main');
+const progressWrap = document.getElementById('progressWrap');
+const progressBar = document.getElementById('progressBar');
+const progressText = document.getElementById('progressText');
+const headerTitle = document.getElementById('headerTitle');
+
+/* ===================== 유틸 ===================== */
+function getRangeChunks(){
+  const chunks=[];
+  for(let i=0;i<state.totalQuestions;i+=10){
+    chunks.push({start:i, end:Math.min(i+10,state.totalQuestions)-1});
+  }
+  return chunks;
+}
+
+/* ===== 결과 전송: 숨김 iframe + form 제출 방식 (CORS 우회, 가장 안정적) ===== */
+function sendResultsToSheet(payload){
+  return new Promise((resolve)=>{
+    try{
+      document.getElementById('fGrade').value = payload.student.grade;
+      document.getElementById('fClassNum').value = payload.student.classNum;
+      document.getElementById('fNumber').value = payload.student.number;
+      document.getElementById('fName').value = payload.student.name;
+      document.getElementById('fScore').value = payload.score;
+      document.getElementById('fTotal').value = payload.total;
+
+      const iframe = document.getElementById('hiddenSubmitFrame');
+      let done = false;
+
+      const finish = ()=>{
+        if(done) return;
+        done = true;
+        resolve(true);
+      };
+
+      iframe.onload = finish;
+      // 혹시 onload가 안 잡히는 브라우저 대비 안전장치(2.5초 후 강제 진행)
+      setTimeout(finish, 2500);
+
+      document.getElementById('hiddenSubmitForm').submit();
+    }catch(err){
+      console.warn('전송 중 오류:', err);
+      resolve(false);
+    }
+  });
+}
+
+/* 콤보박스 옵션 생성 헬퍼 */
+function buildOptions(min, max, selected, unit){
+  let html = `<option value="">선택</option>`;
+  for(let i=min;i<=max;i++){
+    const sel = (String(selected) === String(i)) ? 'selected' : '';
+    html += `<option value="${i}" ${sel}>${i}${unit||''}</option>`;
+  }
+  return html;
+}
+
+/* 4지선다 선택지 무작위 셔플 (원본 데이터는 변경하지 않음) */
+function getShuffledMC(mc){
+  const idxArr = mc.options.map((_,i)=>i);
+  for(let i=idxArr.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [idxArr[i], idxArr[j]] = [idxArr[j], idxArr[i]];
+  }
+  const shuffledOptions = idxArr.map(i=>mc.options[i]);
+  const newAnswerIdx = idxArr.indexOf(mc.answer);
+  return { q: mc.q, options: shuffledOptions, answer: newAnswerIdx, explain: mc.explain };
+}
+
+/* ===================== 1. 학생 정보 입력 (콤보박스) ===================== */
+function renderStudentForm(){
+  progressWrap.classList.add('hidden');
+  progressText.classList.add('hidden');
+  headerTitle.textContent = "컴활 2급 · 2과목 스프레드시트";
+  main.innerHTML = `
+    <div class="start-screen" style="text-align:left;">
+      <h2 style="text-align:center;">🙋 내 정보 입력</h2>
+      <p style="text-align:center;">학년 / 반 / 번호 / 이름을 선택·입력해주세요</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label>학년</label>
+          <select id="inGrade">${buildOptions(1,3,state.student.grade,'학년')}</select>
+        </div>
+        <div class="form-group">
+          <label>반</label>
+          <select id="inClass">${buildOptions(1,6,state.student.classNum,'반')}</select>
+        </div>
+        <div class="form-group">
+          <label>번호</label>
+          <select id="inNumber">${buildOptions(1,22,state.student.number,'번')}</select>
+        </div>
+      </div>
+      <div class="form-group full"><label>이름</label><input type="text" id="inName" placeholder="이름을 입력하세요" value="${state.student.name}"></div>
+      <div id="formError" style="color:#dc2626; font-size:13px; font-weight:600; margin-bottom:10px; display:none;"></div>
+      <button class="big-btn" onclick="submitStudentForm()">다음 ▶</button>
+    </div>
+  `;
+}
+
+function submitStudentForm(){
+  const gradeVal = document.getElementById('inGrade').value;
+  const classVal = document.getElementById('inClass').value;
+  const numberVal = document.getElementById('inNumber').value;
+  const name = document.getElementById('inName').value.trim();
+  const errorBox = document.getElementById('formError');
+
+  const grade = parseInt(gradeVal);
+  const classNum = parseInt(classVal);
+  const number = parseInt(numberVal);
+
+  let errors = [];
+
+  if(!gradeVal || isNaN(grade) || grade < 1 || grade > 3){
+    errors.push('학년을 선택해주세요. (1~3)');
+  }
+  if(!classVal || isNaN(classNum) || classNum < 1 || classNum > 6){
+    errors.push('반을 선택해주세요. (1~6)');
+  }
+  if(!numberVal || isNaN(number) || number < 1 || number > 22){
+    errors.push('번호를 선택해주세요. (1~22)');
+  }
+  if(!name){
+    errors.push('이름을 입력해주세요.');
+  }
+
+  if(errors.length > 0){
+    errorBox.style.display = 'block';
+    errorBox.innerHTML = errors.map(e=>`⚠️ ${e}`).join('<br>');
+    return;
+  }
+
+  errorBox.style.display = 'none';
+  state.student = {grade: grade, classNum: classNum, number: number, name};
+  renderSetupScreen();
+}
+
+/* ===================== 2. 안내(설정) 화면 ===================== */
+function renderSetupScreen(){
+  progressWrap.classList.add('hidden');
+  progressText.classList.add('hidden');
+  headerTitle.textContent = `${state.student.grade}학년 ${state.student.classNum}반 ${state.student.number}번 ${state.student.name}`;
+
+  const chunks = getRangeChunks();
+  const chunkHtml = chunks.map((c,i)=>`
+    <button class="chip-btn ${state.rangeIndex===i?'active':''}" onclick="selectRange(${i})">${c.start+1}~${c.end+1}번</button>
+  `).join('');
+
+  main.innerHTML = `
+    <div class="start-screen">
+      <h2>📊 스프레드시트 일반</h2>
+      <div class="total-badge">총 문제 수: ${state.totalQuestions}문제</div>
+      <div class="section-label">📌 문제 범위 선택 (10문제 단위)</div>
+      <div class="chip-group">${chunkHtml}</div>
+      <div class="section-label">🔀 출제 순서</div>
+      <div class="chip-group">
+        <button class="chip-btn ${state.order==='sequential'?'active':''}" onclick="selectOrder('sequential')">순서대로</button>
+        <button class="chip-btn ${state.order==='random'?'active':''}" onclick="selectOrder('random')">무작위</button>
+      </div>
+      <button class="big-btn" onclick="startQuiz()">🚀 학습 시작하기</button>
+      <button class="big-btn secondary" onclick="renderStudentForm()">👤 정보 다시 입력</button>
+    </div>
+  `;
+}
+
+function selectRange(i){ state.rangeIndex = i; renderSetupScreen(); }
+function selectOrder(o){ state.order = o; renderSetupScreen(); }
+
+/* ===================== 3. 퀴즈 시작 ===================== */
+function startQuiz(){
+  const chunks = getRangeChunks();
+  const c = chunks[state.rangeIndex];
+  let list = [];
+  for(let i=c.start;i<=c.end;i++){
+    list.push({originalIndex:i, data:QUESTIONS[i]});
+  }
+  if(state.order === 'random'){
+    for(let i=list.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [list[i],list[j]] = [list[j],list[i]];
+    }
+  }
+  state.mode = 'normal';
+  state.quizQueue = list;
+  state.qPos = 0;
+  state.step = 0;
+  state.results = [];
+  progressWrap.classList.remove('hidden');
+  progressText.classList.remove('hidden');
+  renderStep();
+}
+
+function updateProgress(){
+  if(state.mode === 'normal'){
+    const totalSteps = state.quizQueue.length*4;
+    const done = state.qPos*4 + state.step;
+    const pct = Math.min(100, Math.round(done/totalSteps*100));
+    progressBar.style.width = pct+'%';
+    progressText.textContent = `문제 ${state.qPos+1} / ${state.quizQueue.length} · ${state.student.name}`;
+    headerTitle.textContent = "📚 학습 진행 중";
+  } else {
+    const total = state.retryQueue.length;
+    const pct = Math.min(100, Math.round(state.retryPos/total*100));
+    progressBar.style.width = pct+'%';
+    progressText.textContent = `오답 재도전 ${state.retryPos+1} / ${total}`;
+    headerTitle.textContent = "🔁 틀린 문제 다시 풀기";
+  }
+}
+
+function renderStep(){
+  updateProgress();
+  const q = state.quizQueue[state.qPos].data;
+  if(state.step===0 || state.step===1) renderFlashcard(q, state.step);
+  else if(state.step===2) renderOX(q);
+  else if(state.step===3) renderMC(q, false);
+}
+
+/* ===== 개념 플래시카드 (2장) ===== */
+function renderFlashcard(q, idx){
+  const card = q.cards[idx];
+  main.innerHTML = `
+    <div class="step-badge">📇 플래시카드 ${idx+1}/2 · ${q.title}</div>
+    <div class="flip-hint">카드를 탭하면 답이 보여요</div>
+    <div class="flip-card" id="flipCard">
+      <div class="flip-inner">
+        <div class="flip-front">${card.q}</div>
+        <div class="flip-back">${card.a}</div>
+      </div>
+    </div>
+    <div class="card-nav">
+      <button class="big-btn secondary" onclick="prevStep()">이전</button>
+      <button class="big-btn" onclick="nextStep()">다음</button>
+    </div>
+  `;
+  document.getElementById('flipCard').addEventListener('click', function(){
+    this.classList.toggle('flipped');
+  });
+}
+
+/* ===== OX 플래시카드 (1장) ===== */
+function renderOX(q){
+  const ox = q.ox[0];
+  main.innerHTML = `
+    <div class="step-badge">⭕❌ OX 퀴즈 · ${q.title}</div>
+    <div class="flip-hint">O 또는 X를 선택하면 카드가 뒤집혀요</div>
+    <div class="flip-card ox-card" id="oxFlipCard">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <div class="ox-question-text">${ox.q}</div>
+          <div class="ox-btns-inner">
+            <button class="ox-btn o" id="btnO">O</button>
+            <button class="ox-btn x" id="btnX">X</button>
+          </div>
+        </div>
+        <div class="flip-back" id="oxBack"></div>
+      </div>
+    </div>
+    <div class="card-nav" id="oxNav" style="margin-top:16px;"></div>
+  `;
+
+  const btnO = document.getElementById('btnO');
+  const btnX = document.getElementById('btnX');
+  const flipCard = document.getElementById('oxFlipCard');
+  const backEl = document.getElementById('oxBack');
+  let answered = false;
+
+  function pick(val){
+    if(answered) return;
+    answered = true;
+    const correct = (val === ox.a);
+    backEl.classList.add(correct ? 'back-correct' : 'back-wrong');
+    backEl.innerHTML = `
+      <div class="ox-result-icon">${correct ? '✅' : '❌'}</div>
+      <div class="ox-result-title">${correct ? '정답입니다!' : '오답입니다!'}</div>
+      <div class="ox-result-sub">정답: ${ox.a ? 'O' : 'X'} · 내 선택: ${val ? 'O' : 'X'}</div>
+      <div class="ox-explain-text">${ox.explain}</div>
+    `;
+    setTimeout(()=>{ flipCard.classList.add('flipped'); }, 100);
+    document.getElementById('oxNav').innerHTML = `<button class="big-btn" onclick="nextStep()">다음 ▶</button>`;
+  }
+
+  btnO.addEventListener('click', ()=>pick(true));
+  btnX.addEventListener('click', ()=>pick(false));
+}
+
+/* ===== 문제 플래시카드 (4지선다, 매번 선택지 무작위 셔플) ===== */
+function renderMC(q, isRetry){
+  const mc = getShuffledMC(q.mc);
+
+  const optHtml = mc.options.map((opt,i)=>`
+    <button class="choice-btn" data-idx="${i}">${['①','②','③','④'][i]} ${opt}</button>
+  `).join('');
+
+  main.innerHTML = `
+    <div class="step-badge">📝 문제 풀이 ${isRetry?'(오답 재도전)':''} · ${q.title}</div>
+    <div class="flip-hint">보기를 선택하면 1초 후 결과가 나와요</div>
+    <div class="flip-card mc-card" id="mcFlipCard">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <div class="mc-front-inner">
+            <div class="quiz-question">${mc.q}</div>
+            <div id="choices">${optHtml}</div>
+          </div>
+        </div>
+        <div class="flip-back" id="mcBack"></div>
+      </div>
+    </div>
+    <div class="card-nav" id="mcNav" style="margin-top:16px;"></div>
+  `;
+
+  const btns = document.querySelectorAll('.choice-btn');
+  const flipCard = document.getElementById('mcFlipCard');
+  const backEl = document.getElementById('mcBack');
+  let answered = false;
+
+  btns.forEach(btn=>{
+    btn.addEventListener('click', function(){
+      if(answered) return;
+      answered = true;
+      const idx = parseInt(this.dataset.idx);
+      btns.forEach(b=>{
+        const bi = parseInt(b.dataset.idx);
+        if(bi === mc.answer) b.classList.add('correct');
+        else if(bi === idx) b.classList.add('wrong');
+        b.disabled = true;
+      });
+      const correct = idx === mc.answer;
+
+      setTimeout(()=>{
+        backEl.classList.add(correct ? 'back-correct' : 'back-wrong');
+        backEl.innerHTML = `
+          <div class="ox-result-icon">${correct ? '✅' : '❌'}</div>
+          <div class="ox-result-title">${correct ? '정답입니다!' : '오답입니다!'}</div>
+          <div class="ox-result-sub">정답: ${['①','②','③','④'][mc.answer]} ${mc.options[mc.answer]}</div>
+          <div class="ox-explain-text">${mc.explain}</div>
+        `;
+        flipCard.classList.add('flipped');
+
+        if(!isRetry){
+          state.results.push({no: state.quizQueue[state.qPos].originalIndex+1, title:q.title, correct});
+        } else {
+          state.retryResults.push({no: state.retryQueue[state.retryPos].originalIndex+1, title:q.title, correct});
+        }
+
+        const isLast = isRetry ? (state.retryPos >= state.retryQueue.length-1) : (state.qPos >= state.quizQueue.length-1);
+        const btnLabel = isRetry ? (isLast ? '결과 확인 🏁' : '다음 ▶') : (isLast ? '결과 제출 🏁' : '다음 문제 ▶');
+        const handler = isRetry ? 'advanceAfterRetryMC()' : 'advanceAfterMC()';
+
+        document.getElementById('mcNav').innerHTML = `<button class="big-btn" onclick="${handler}">${btnLabel}</button>`;
+      }, 1000);
+    });
+  });
+}
+
+function nextStep(){
+  if(state.step < 3){ state.step++; renderStep(); }
+}
+function prevStep(){
+  if(state.step > 0){ state.step--; renderStep(); }
+}
+
+function advanceAfterMC(){
+  if(state.qPos < state.quizQueue.length-1){
+    state.qPos++; state.step = 0; renderStep();
+  } else {
+    finishNormalRound();
+  }
+}
+
+function advanceAfterRetryMC(){
+  if(state.retryPos < state.retryQueue.length-1){
+    state.retryPos++; renderRetryStep();
+  } else {
+    finishRetryRound();
+  }
+}
+
+function renderRetryStep(){
+  updateProgress();
+  const q = state.retryQueue[state.retryPos].data;
+  renderMC(q, true);
+}
+
+/* ===================== 4. 결과 전송 + 오답 재도전 ===================== */
+function finishNormalRound(){
+  headerTitle.textContent = "📤 결과 전송 중...";
+  main.innerHTML = `
+    <div class="start-screen">
+      <h2>📤 결과를 전송하고 있어요...</h2>
+      <p>구글 스프레드시트에 결과를 저장하는 중입니다.<br>잠시만 기다려주세요.</p>
+      <div class="status-box status-wait" id="sendStatus">전송 요청 보내는 중...</div>
+    </div>
+  `;
+
+  const score = state.results.filter(r=>r.correct).length;
+  const total = state.results.length;
+
+  const payload = {
+    student: state.student,
+    score: score,
+    total: total
+  };
+
+  sendResultsToSheet(payload).then((ok)=>{
+    const statusBox = document.getElementById('sendStatus');
+    if(statusBox){
+      if(ok){
+        statusBox.className = 'status-box status-ok';
+        statusBox.textContent = '✅ 전송 완료! (스프레드시트에서 확인해보세요)';
+      } else {
+        statusBox.className = 'status-box status-fail';
+        statusBox.textContent = '⚠️ 전송에 실패했을 수 있어요. (진행은 계속됩니다)';
+      }
+    }
+    setTimeout(()=>{
+      const wrongList = state.quizQueue.filter((item,idx)=> state.results[idx] && state.results[idx].correct === false);
+      if(wrongList.length > 0){
+        renderRoundResultTransition(score, total, wrongList);
+      } else {
+        renderAllCorrectScreen(score, total);
+      }
+    }, 600);
+  });
+}
+
+function renderRoundResultTransition(score, total, wrongList){
+  state.pendingWrongList = wrongList;
+  main.innerHTML = `
+    <div class="start-screen">
+      <h2>✅ 결과 전송 완료</h2>
+      <p>이번 회차 점수: <b>${score} / ${total}</b></p>
+      <p style="color:#dc2626; font-weight:700;">틀린 문제 ${wrongList.length}개를 다시 풀어볼까요?</p>
+      <button class="big-btn" onclick="startRetryRound()">🔁 오답 다시 풀기</button>
+    </div>
+  `;
+}
+
+function renderAllCorrectScreen(score, total){
+  main.innerHTML = `
+    <div class="start-screen">
+      <h2>🎉 축하합니다!</h2>
+      <p>${total}문제 중 ${score}문제 모두 정답입니다!</p>
+      <button class="big-btn" onclick="backToSetup()">🏠 안내 화면으로</button>
+    </div>
+  `;
+}
+
+function startRetryRound(){
+  state.mode = 'retry';
+  state.retryQueue = state.pendingWrongList;
+  state.retryPos = 0;
+  state.retryResults = [];
+  renderRetryStep();
+}
+
+function finishRetryRound(){
+  const retryScore = state.retryResults.filter(r=>r.correct).length;
+  main.innerHTML = `
+    <div class="start-screen">
+      <h2>🎉 오답 학습 완료!</h2>
+      <p>재도전 결과: <b>${retryScore} / ${state.retryResults.length}</b></p>
+      <button class="big-btn" onclick="backToSetup()">🏠 안내 화면으로</button>
+    </div>
+  `;
+}
+
+function backToSetup(){
+  state.mode = 'normal';
+  progressWrap.classList.add('hidden');
+  progressText.classList.add('hidden');
+  renderSetupScreen();
+}
+
+/* ===================== 초기 진입 ===================== */
+renderStudentForm();
+
+
+		</script>
+    </body>
+</html>
+                    
